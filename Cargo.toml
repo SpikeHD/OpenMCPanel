@@ -1,5 +1,5 @@
 [package]
-name = "OpenMCPanel"
+name = "open_mc_panel"
 version = "0.1.0"
 edition = "2021"
 
