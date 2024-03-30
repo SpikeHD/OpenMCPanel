@@ -6,7 +6,7 @@ use tide;
 use include_dir::{include_dir, Dir};
 use rpassword::read_password;
 
-use crate::web::{middleware, server::State};
+use crate::web::{api::register_routes, middleware, server::State};
 
 mod util;
 mod web;
@@ -29,6 +29,9 @@ struct Opts {
 
   #[options(help = "Username to use while authenticating", meta = "admin")]
   username: Option<String>,
+
+  #[options(help = "Auto-generate an NGINX config file")]
+  nginx: bool,
 }
 
 fn main() {
@@ -50,8 +53,6 @@ fn main() {
     std::io::stdout().flush().unwrap();
     std::io::stdin().read_line(&mut username).unwrap();
   }
-
-  log!("username: {}", username);
 
   // Prompt for password
   print!("Password to use while authenticating: ");
@@ -86,7 +87,7 @@ fn main() {
 
   recursive_serve(&mut app, None);
 
-  // TODO register API routes
+  register_routes(&mut app);
 
   async_std::task::block_on(async {
     app.listen(format!("{}:{}", args.address.as_str(), args.port)).await.unwrap();
