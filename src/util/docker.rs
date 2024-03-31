@@ -1,7 +1,7 @@
 use async_std::stream::StreamExt;
 use bollard::{
   container::{
-    CreateContainerOptions, StartContainerOptions
+    CreateContainerOptions, ListContainersOptions, StartContainerOptions
   },
   exec::{
     CreateExecOptions,
@@ -43,9 +43,14 @@ pub async fn init() {
   stream.await;
 }
 
-pub async fn get_minecraft_containers() -> Result<Vec<Container>, Box<dyn std::error::Error + Send + Sync>>{
+pub async fn get_minecraft_containers(all: bool) -> Result<Vec<Container>, Box<dyn std::error::Error + Send + Sync>>{
   let docker = bollard::Docker::connect_with_local_defaults()?;
-  let containers = docker.list_containers::<String>(None).await?;
+  let containers = docker.list_containers::<String>(
+    Some(ListContainersOptions {
+      all,
+      ..Default::default()
+    })
+  ).await?;
   let mut container_result = vec![];
 
   for container in containers {
@@ -55,6 +60,12 @@ pub async fn get_minecraft_containers() -> Result<Vec<Container>, Box<dyn std::e
     let name = name.first().unwrap_or(&default_name);
     let status = container.status.unwrap_or_default();
     let id = container.id.unwrap_or_default();
+
+    // If the image is not the minecraft image, skip it
+    // TODO allow custom images
+    if !image.contains(IMAGE) {
+      continue;
+    }
 
     container_result.push(Container {
       id,
@@ -114,7 +125,12 @@ pub async fn deploy_minecraft_container(opts: &DeploymentConfig) -> Result<(), B
 
 pub async fn start_minecraft_container(id: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
   let docker = bollard::Docker::connect_with_local_defaults().unwrap();
-  let containers = docker.list_containers::<String>(None).await.unwrap();
+  let containers = docker.list_containers::<String>(
+    Some(ListContainersOptions {
+      all: true,
+      ..Default::default()
+    })
+  ).await.unwrap();
 
   for container in containers {
     if container.id.unwrap_or_default() == id {
@@ -128,11 +144,36 @@ pub async fn start_minecraft_container(id: &str) -> Result<(), Box<dyn std::erro
 
 pub async fn stop_minecraft_container(id: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
   let docker = bollard::Docker::connect_with_local_defaults().unwrap();
-  let containers = docker.list_containers::<String>(None).await.unwrap();
+  let containers = docker.list_containers::<String>(
+    Some(ListContainersOptions {
+      all: true,
+      ..Default::default()
+    })
+  ).await.unwrap();
 
   for container in containers {
     if container.id.unwrap_or_default() == id {
       docker.stop_container(id, None).await?;
+      return Ok(());
+    }
+  }
+
+  Err("Container not found".into())
+}
+
+pub async fn destroy_minecraft_container(id: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+  let docker = bollard::Docker::connect_with_local_defaults().unwrap();
+  let containers = docker.list_containers::<String>(
+    Some(ListContainersOptions {
+      all: true,
+      ..Default::default()
+    })
+  ).await.unwrap();
+
+  for container in containers {
+    if container.id.unwrap_or_default() == id {
+      docker.stop_container(id, None).await?;
+      docker.remove_container(id, None).await?;
       return Ok(());
     }
   }

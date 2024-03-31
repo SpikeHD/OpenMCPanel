@@ -27,8 +27,23 @@ struct DockerResult {
 }
 
 pub fn register_routes(app: &mut Server<State>) {
-  app.at("/api/running_containers").get(|_| async {
-    let containers = match docker::get_minecraft_containers().await {
+  app.at("/api/containers/running").get(|_| async {
+    let containers = match docker::get_minecraft_containers(false).await {
+      Ok(containers) => containers,
+      Err(e) => {
+        log!("Failed to get containers: {}", e);
+        vec![]
+      },
+    };
+
+    let mut response = tide::Response::new(200);
+    response.set_body(serde_json::to_string(&containers).unwrap_or_default());
+
+    Ok(response)
+  });
+
+  app.at("/api/containers/all").get(|_| async {
+    let containers = match docker::get_minecraft_containers(true).await {
       Ok(containers) => containers,
       Err(e) => {
         log!("Failed to get containers: {}", e);
@@ -85,6 +100,36 @@ pub fn register_routes(app: &mut Server<State>) {
         DockerResult {
           success: false,
           message: format!("Failed to stop container {}: {}", id, e),
+        }
+      },
+    };
+
+    let mut response = tide::Response::new(
+      if result.success {
+        200
+      } else {
+        500
+      }
+    );
+
+    response.set_body(serde_json::to_string(&result).unwrap_or_default());
+
+    Ok(response)
+  });
+
+  app.at("/api/destroy/:id").post(|req: tide::Request<State>| async move {
+    let id = req.param("id").expect("Failed to get id");
+
+    let result = match docker::destroy_minecraft_container(id).await {
+      Ok(_) => DockerResult {
+        success: true,
+        message: format!("Destroyed container {}", id),
+      },
+      Err(e) => {
+        log!("Failed to destroy container {}: {}", id, e);
+        DockerResult {
+          success: false,
+          message: format!("Failed to destroy container {}: {}", id, e),
         }
       },
     };
