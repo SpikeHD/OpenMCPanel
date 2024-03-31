@@ -57,6 +57,23 @@ pub fn register_routes(app: &mut Server<State>) {
     Ok(response)
   });
 
+  app.at("/api/container/:id").get(|req: tide::Request<State>| async move {
+    let id = req.param("id").expect("Failed to get id");
+
+    let status = match docker::get_status(id).await {
+      Ok(status) => status,
+      Err(e) => {
+        log!("Failed to get container {}: {}", id, e);
+        docker::Status::default()
+      },
+    };
+
+    let mut response = tide::Response::new(200);
+    response.set_body(serde_json::to_string(&status).unwrap_or_default());
+
+    Ok(response)
+  });
+
   app.at("/api/deploy").post(|mut req: tide::Request<State>| async move {
     let opts: DeploymentConfig = req.body_json().await.expect("Failed to parse JSON");
 

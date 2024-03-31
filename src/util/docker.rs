@@ -10,6 +10,7 @@ use bollard::{
   image::CreateImageOptions
 };
 use serde::Serialize;
+use tide::http::server;
 
 use crate::{log, web::api::DeploymentConfig};
 
@@ -19,6 +20,18 @@ pub struct Container {
   pub image: String,
   pub name: String,
   pub status: String,
+}
+
+#[derive(Serialize, Default)]
+pub struct Status {
+  pub icon: String,
+  pub online: bool,
+  pub players: i64,
+  pub max_players: i64,
+  pub motd: String,
+  pub container_id: String,
+  pub container_name: String,
+  pub container_status: String,
 }
 
 static IMAGE: &str = "itzg/minecraft-server";
@@ -76,6 +89,75 @@ pub async fn get_minecraft_containers(all: bool) -> Result<Vec<Container>, Box<d
   }
 
   Ok(container_result)
+}
+
+pub async fn get_status(id: &str) -> Result<Status, Box<dyn std::error::Error + Send + Sync>> {
+  let docker = bollard::Docker::connect_with_local_defaults().unwrap();
+  let containers = docker.list_containers::<String>(
+    Some(ListContainersOptions {
+      all: true,
+      ..Default::default()
+    })
+  ).await.unwrap();
+  let mut server_status = Status {
+    icon: "".to_string(),
+    online: false,
+    players: 0,
+    max_players: 0,
+    motd: "".to_string(),
+    container_id: id.to_string(),
+    container_name: "".to_string(),
+    container_status: "".to_string(),
+  };
+
+  for container in containers {
+    if container.id.unwrap_or_default() != id {
+      continue;
+    }
+
+    server_status.container_id = id.to_string();
+    server_status.container_name = container.names.unwrap_or_default().first().unwrap_or(&"".to_string()).to_string();
+    server_status.container_status = container.state.unwrap_or_default();
+
+    if server_status.container_status != "running" {
+      return Ok(server_status);
+    }
+
+    // If state is running, use mcping to get other info
+    // Get the network info (ie. port) from the container
+    let ports = container.ports.unwrap_or_default();
+    let port = ports.first();
+
+    if let Some(port) = port {
+      let port = port.public_port.unwrap_or_default();
+      let address = format!("127.0.0.1:{}", port);
+      let address = address.as_str();
+      let result = mcping::get_status(address, None);
+
+      match result {
+        Ok(status) => {
+          let status = status.1;
+          server_status.icon = status.favicon.clone().unwrap_or_default();
+          server_status.online = true;
+          server_status.players = status.players.online;
+          server_status.max_players = status.players.max;
+          server_status.motd = status.description.text().to_string();
+        },
+        Err(e) => {
+          log!("Failed to get status: {}", e);
+        },
+      };
+
+      return Ok(server_status);
+    } else {
+      // Not network-accessible??
+      server_status.container_status = "not accessible".to_string();
+
+      return Ok(server_status);
+    }
+  }
+
+  Err("Container not found".into())
 }
 
 pub async fn deploy_minecraft_container(opts: &DeploymentConfig) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
