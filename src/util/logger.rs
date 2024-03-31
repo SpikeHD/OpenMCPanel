@@ -1,5 +1,5 @@
-use colored::Colorize;
 use chrono::Local;
+use colored::Colorize;
 use std::fmt::Display;
 use std::fs::{self, File};
 use std::io::Write;
@@ -33,7 +33,12 @@ pub fn log(s: impl AsRef<str> + Display, kind: Option<LogKind>) {
     Some(LogKind::Error) => "ERROR".red(),
     None => "INFO".blue(),
   };
-  println!("[{}] [{}] {}", Local::now().format("%Y-%m-%d %H:%M:%S"), status, s);
+  println!(
+    "[{}] [{}] {}",
+    Local::now().format("%Y-%m-%d %H:%M:%S"),
+    status,
+    s
+  );
 
   let mut file = LOG_FILE.lock().unwrap();
 

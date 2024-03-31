@@ -19,10 +19,7 @@ struct Opts {
   #[options(help = "Specify log file location", meta = "/path/to/logfile")]
   log: Option<String>,
 
-  #[options(
-    help = "Access address for the web panel",
-    meta = "127.0.0.1"
-  )]
+  #[options(help = "Access address for the web panel", meta = "127.0.0.1")]
   address: Option<String>,
 
   #[options(help = "Access port for the web panel", meta = "8080")]
@@ -108,10 +105,7 @@ fn main() {
 
   async_std::task::block_on(async {
     log!("Webserver running on http://{}:{}", addr, port);
-    app
-      .listen(format!("{}:{}", addr, port))
-      .await
-      .unwrap();
+    app.listen(format!("{}:{}", addr, port)).await.unwrap();
   });
 }
 

@@ -1,4 +1,4 @@
-use crate::{success, error, warn};
+use crate::{error, success, warn};
 
 pub fn check_all() -> bool {
   // Set to true if a required dependency is not installed
@@ -20,7 +20,7 @@ pub fn check_all() -> bool {
 
 pub fn check_for_docker() -> bool {
   // Check if docker is installed
-  // TODO maybe allow remote Docker connections for remote management? 
+  // TODO maybe allow remote Docker connections for remote management?
   let docker = bollard::Docker::connect_with_local_defaults();
   match docker {
     Ok(_) => success!("Docker is installed!"),
@@ -38,9 +38,11 @@ pub fn check_for_nginx() -> bool {
   let nginx = std::process::Command::new("nginx").arg("-v").output();
   match nginx {
     Ok(_) => success!("NGINX is installed"),
-    Err(e) => {
+    Err(_) => {
       warn!("NGINX is not installed. It is reccommended to use it for reverse proxying. Learn more: https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/");
-      warn!("If you're using something else, or don't care, you are welcome to ignore this warning!");
+      warn!(
+        "If you're using something else, or don't care, you are welcome to ignore this warning!"
+      );
       return false;
     }
   }
@@ -50,12 +52,16 @@ pub fn check_for_nginx() -> bool {
 
 pub fn check_for_fail2ban() -> bool {
   // Check if fail2ban is installed
-  let fail2ban = std::process::Command::new("fail2ban-client").arg("-V").output();
+  let fail2ban = std::process::Command::new("fail2ban-client")
+    .arg("-V")
+    .output();
   match fail2ban {
     Ok(_) => success!("Fail2ban is installed"),
-    Err(e) => {
+    Err(_) => {
       warn!("Fail2ban is not installed. It is reccommended to use it for preventing brute-force attacks. Learn more: https://github.com/fail2ban/fail2ban");
-      warn!("If you're using something else, or don't care, you are welcome to ignore this warning!");
+      warn!(
+        "If you're using something else, or don't care, you are welcome to ignore this warning!"
+      );
       return false;
     }
   }
