@@ -59,6 +59,11 @@ fn main() {
   std::io::stdout().flush().unwrap();
   pwd = sha2::Sha256::digest(read_password().unwrap().as_bytes()).to_vec();
 
+  // Pull the docker image
+  log!("Pulling minecraft-server Docker image");
+  async_std::task::block_on(util::docker::init());
+  log!("Done!");
+
   let state = web::server::State::new(username.trim().to_string(), pwd);
   let mut app = tide::with_state(state);
 
@@ -90,6 +95,7 @@ fn main() {
   register_routes(&mut app);
 
   async_std::task::block_on(async {
+    log!("Webserver running on http://{}:{}", args.address, args.port);
     app.listen(format!("{}:{}", args.address.as_str(), args.port)).await.unwrap();
   });
 }

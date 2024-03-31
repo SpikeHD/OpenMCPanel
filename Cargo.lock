@@ -1628,6 +1628,8 @@ dependencies = [
  "mime_guess",
  "pico-args",
  "rpassword",
+ "serde",
+ "serde_json",
  "sha2 0.10.8",
  "tide",
  "tide-http-auth",
