@@ -1,3 +1,4 @@
+use colored::Colorize;
 use chrono::Local;
 use std::fmt::Display;
 use std::fs::{self, File};
@@ -6,6 +7,13 @@ use std::path::PathBuf;
 use std::sync::Mutex;
 
 static LOG_FILE: Mutex<Option<File>> = Mutex::new(None);
+
+pub enum LogKind {
+  Info,
+  Success,
+  Warn,
+  Error,
+}
 
 pub fn init(with_file: Option<PathBuf>) {
   if let Some(path) = with_file {
@@ -17,8 +25,15 @@ pub fn init(with_file: Option<PathBuf>) {
   }
 }
 
-pub fn log(s: impl AsRef<str> + Display) {
-  println!("[{}] {}", Local::now().format("%Y-%m-%d %H:%M:%S"), s);
+pub fn log(s: impl AsRef<str> + Display, kind: Option<LogKind>) {
+  let status = match kind {
+    Some(LogKind::Info) => "INFO".blue(),
+    Some(LogKind::Success) => "SUCCESS".green(),
+    Some(LogKind::Warn) => "WARN".yellow(),
+    Some(LogKind::Error) => "ERROR".red(),
+    None => "INFO".blue(),
+  };
+  println!("[{}] [{}] {}", Local::now().format("%Y-%m-%d %H:%M:%S"), status, s);
 
   let mut file = LOG_FILE.lock().unwrap();
 
@@ -30,6 +45,27 @@ pub fn log(s: impl AsRef<str> + Display) {
 #[macro_export]
 macro_rules! log {
   ($($arg:tt)*) => {
-    $crate::util::logger::log(format!($($arg)*))
+    $crate::util::logger::log(format!($($arg)*), Some($crate::util::logger::LogKind::Info))
+  };
+}
+
+#[macro_export]
+macro_rules! success {
+  ($($arg:tt)*) => {
+    $crate::util::logger::log(format!($($arg)*), Some($crate::util::logger::LogKind::Success))
+  };
+}
+
+#[macro_export]
+macro_rules! warn {
+  ($($arg:tt)*) => {
+    $crate::util::logger::log(format!($($arg)*), Some($crate::util::logger::LogKind::Warn))
+  };
+}
+
+#[macro_export]
+macro_rules! error {
+  ($($arg:tt)*) => {
+    $crate::util::logger::log(format!($($arg)*), Some($crate::util::logger::LogKind::Error))
   };
 }

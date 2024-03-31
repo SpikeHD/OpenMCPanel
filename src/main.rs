@@ -21,19 +21,21 @@ struct Opts {
 
   #[options(
     help = "Access address for the web panel",
-    meta = "127.0.0.1",
-    required
+    meta = "127.0.0.1"
   )]
-  address: String,
+  address: Option<String>,
 
-  #[options(help = "Access port for the web panel", meta = "8080", required)]
-  port: u16,
+  #[options(help = "Access port for the web panel", meta = "8080")]
+  port: Option<u16>,
 
   #[options(help = "Username to use while authenticating", meta = "admin")]
   username: Option<String>,
 
   #[options(help = "Auto-generate an NGINX config file")]
   nginx: bool,
+
+  #[options(help = "Check for all required dependencies")]
+  check: bool,
 }
 
 fn main() {
@@ -41,6 +43,12 @@ fn main() {
 
   if args.help {
     println!("{}", Opts::usage());
+    return;
+  }
+
+  let can_run = util::dependencies::check_all();
+
+  if args.check || !can_run {
     return;
   }
 
@@ -95,10 +103,13 @@ fn main() {
 
   register_routes(&mut app);
 
+  let addr = args.address.unwrap_or("127.0.0.1".to_string());
+  let port = args.port.unwrap_or(8080);
+
   async_std::task::block_on(async {
-    log!("Webserver running on http://{}:{}", args.address, args.port);
+    log!("Webserver running on http://{}:{}", addr, port);
     app
-      .listen(format!("{}:{}", args.address.as_str(), args.port))
+      .listen(format!("{}:{}", addr, port))
       .await
       .unwrap();
   });
