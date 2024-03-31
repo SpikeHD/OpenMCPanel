@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use tide::Server;
 
@@ -12,7 +14,7 @@ pub struct DeploymentConfig {
   pub kind: String,
   pub version: String,
   pub modpack_id: Option<String>,
-  pub additional_options: Option<Vec<String>>,
+  pub additional_options: Option<HashMap<String, String>>,
   pub rcon_on_start: Option<Vec<String>>,
   pub rcon_on_connect: Option<Vec<String>>,
   pub rcon_on_disconnect: Option<Vec<String>>,
@@ -82,9 +84,9 @@ pub fn register_routes(app: &mut Server<State>) {
       let opts: DeploymentConfig = req.body_json().await.expect("Failed to parse JSON");
 
       let result = match docker::deploy_minecraft_container(&opts).await {
-        Ok(_) => DockerResult {
+        Ok(id) => DockerResult {
           success: true,
-          message: format!("Deployed container {}", opts.name),
+          message: id,
         },
         Err(e) => {
           log!("Failed to deploy container {}: {}", opts.name, e);

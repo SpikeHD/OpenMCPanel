@@ -36,6 +36,7 @@ pub async fn init() {
   let stream = docker.create_image(
     Some(CreateImageOptions {
       from_image: IMAGE,
+      tag: "latest",
       ..Default::default()
     }),
     None,
@@ -163,7 +164,7 @@ pub async fn get_status(id: &str) -> Result<Status, Box<dyn std::error::Error + 
 
 pub async fn deploy_minecraft_container(
   opts: &DeploymentConfig,
-) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
   let docker = bollard::Docker::connect_with_local_defaults()?;
   let mut create_opts = bollard::container::Config {
     image: Some(IMAGE.to_string()),
@@ -199,11 +200,13 @@ pub async fn deploy_minecraft_container(
   }
 
   if let Some(additional_options) = &opts.additional_options {
-    create_opts
-      .env
-      .as_mut()
-      .unwrap()
-      .extend(additional_options.clone());
+    for (key, value) in additional_options {
+      create_opts
+        .env
+        .as_mut()
+        .unwrap()
+        .push(format!("{}={}", key, value));
+    }
   }
 
   let container = docker
@@ -220,7 +223,7 @@ pub async fn deploy_minecraft_container(
     .start_container(&container.id, None::<StartContainerOptions<String>>)
     .await?;
 
-  Ok(())
+  Ok(container.id)
 }
 
 pub async fn start_minecraft_container(
