@@ -5,7 +5,7 @@ use tide_http_auth::{BasicAuthRequest, Storage};
 #[derive(Clone, Debug)]
 pub struct User {
   username: String,
-  password: Vec<u8>
+  password: Vec<u8>,
 }
 
 #[derive(Clone)]
@@ -16,10 +16,7 @@ pub struct State {
 impl State {
   pub fn new(username: String, password: Vec<u8>) -> Self {
     Self {
-      user: User {
-        username,
-        password
-      }
+      user: User { username, password },
     }
   }
 }

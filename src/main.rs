@@ -1,10 +1,8 @@
-use async_std;
-use std::{io::Write, path::Path};
 use gumdrop::Options;
-use sha2::Digest;
-use tide;
 use include_dir::{include_dir, Dir};
 use rpassword::read_password;
+use sha2::Digest;
+use std::{io::Write, path::Path};
 
 use crate::web::{api::register_routes, middleware, server::State};
 
@@ -21,7 +19,11 @@ struct Opts {
   #[options(help = "Specify log file location", meta = "/path/to/logfile")]
   log: Option<String>,
 
-  #[options(help = "Access address for the web panel", meta = "127.0.0.1", required)]
+  #[options(
+    help = "Access address for the web panel",
+    meta = "127.0.0.1",
+    required
+  )]
   address: String,
 
   #[options(help = "Access port for the web panel", meta = "8080", required)]
@@ -45,7 +47,6 @@ fn main() {
   util::logger::init(args.log.map(|s| s.into()));
 
   let mut username = String::new();
-  let pwd;
 
   if args.username.is_none() {
     // Prompt for username
@@ -57,7 +58,7 @@ fn main() {
   // Prompt for password
   print!("Password to use while authenticating: ");
   std::io::stdout().flush().unwrap();
-  pwd = sha2::Sha256::digest(read_password().unwrap().as_bytes()).to_vec();
+  let pwd = sha2::Sha256::digest(read_password().unwrap().as_bytes()).to_vec();
 
   // Pull the docker image
   log!("Pulling minecraft-server Docker image");
@@ -96,7 +97,10 @@ fn main() {
 
   async_std::task::block_on(async {
     log!("Webserver running on http://{}:{}", args.address, args.port);
-    app.listen(format!("{}:{}", args.address.as_str(), args.port)).await.unwrap();
+    app
+      .listen(format!("{}:{}", args.address.as_str(), args.port))
+      .await
+      .unwrap();
   });
 }
 
