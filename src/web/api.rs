@@ -72,7 +72,7 @@ pub fn register_routes(app: &mut Server<State>) {
     Ok(response)
   });
 
-  app.at("/api/stop/:name").get(|req: tide::Request<State>| async move {
+  app.at("/api/stop/:name").post(|req: tide::Request<State>| async move {
     let name = req.param("name").expect("Failed to get name");
 
     let result = match docker::stop_minecraft_container(name).await {

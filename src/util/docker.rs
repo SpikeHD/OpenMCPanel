@@ -108,6 +108,9 @@ pub async fn stop_minecraft_container(name: &str) -> Result<(), Box<dyn std::err
   let docker = bollard::Docker::connect_with_local_defaults().unwrap();
   let containers = docker.list_containers::<String>(None).await.unwrap();
 
+  // Names have a / in front of them
+  let name = format!("/{}", name);
+
   for container in containers {
     if container.names.unwrap_or_default().contains(&name.to_string()) {
       if let Some(id) = container.id {
