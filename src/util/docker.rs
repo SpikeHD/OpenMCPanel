@@ -1,7 +1,12 @@
 use async_std::stream::StreamExt;
 use bollard::{
-  container::CreateContainerOptions,
-  container::StartContainerOptions,
+  container::{
+    CreateContainerOptions, StartContainerOptions
+  },
+  exec::{
+    CreateExecOptions,
+    StartExecOptions, StartExecResults
+  },
   image::CreateImageOptions
 };
 use serde::Serialize;
@@ -10,6 +15,7 @@ use crate::{log, web::api::DeploymentConfig};
 
 #[derive(Serialize)]
 pub struct Container {
+  pub id: String,
   pub image: String,
   pub name: String,
   pub status: String,
@@ -48,8 +54,10 @@ pub async fn get_minecraft_containers() -> Result<Vec<Container>, Box<dyn std::e
     let name = container.names.unwrap_or_default();
     let name = name.first().unwrap_or(&default_name);
     let status = container.status.unwrap_or_default();
+    let id = container.id.unwrap_or_default();
 
     container_result.push(Container {
+      id,
       image,
       name: name.to_string(),
       status,
@@ -104,21 +112,70 @@ pub async fn deploy_minecraft_container(opts: &DeploymentConfig) -> Result<(), B
   Ok(())
 }
 
-pub async fn stop_minecraft_container(name: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+pub async fn start_minecraft_container(id: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
   let docker = bollard::Docker::connect_with_local_defaults().unwrap();
   let containers = docker.list_containers::<String>(None).await.unwrap();
 
-  // Names have a / in front of them
-  let name = format!("/{}", name);
-
   for container in containers {
-    if container.names.unwrap_or_default().contains(&name.to_string()) {
-      if let Some(id) = container.id {
-        docker.stop_container(&id, None).await?;
-        return Ok(());
-      }
+    if container.id.unwrap_or_default() == id {
+      docker.start_container(id, None::<StartContainerOptions<String>>).await?;
+      return Ok(());
     }
   }
 
   Err("Container not found".into())
+}
+
+pub async fn stop_minecraft_container(id: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+  let docker = bollard::Docker::connect_with_local_defaults().unwrap();
+  let containers = docker.list_containers::<String>(None).await.unwrap();
+
+  for container in containers {
+    if container.id.unwrap_or_default() == id {
+      docker.stop_container(id, None).await?;
+      return Ok(());
+    }
+  }
+
+  Err("Container not found".into())
+}
+
+pub async fn run_in_container(id: &str, command: &Vec<String>) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
+  let docker = bollard::Docker::connect_with_local_defaults().unwrap();
+  // rcon-cli <command>
+  // TODO allow disabling RCON, and account for it here using the mc-send-to-console script
+  let exec = docker.create_exec(
+    &id,
+    CreateExecOptions {
+      cmd: Some(vec![
+        "rcon-cli".to_string(),
+        command.join(" "),
+      ]),
+      attach_stdout: Some(true),
+      attach_stderr: Some(true),
+      ..Default::default()
+    },
+  ).await?;
+
+  let results = docker.start_exec(
+    &exec.id,
+    Some(StartExecOptions {
+      detach: false,
+      ..Default::default()
+    })
+  ).await?;
+
+  match results {
+    StartExecResults::Attached { output, .. } => {
+      let mut output = output;
+      let mut result = String::new();
+
+      while let Some(data) = output.next().await {
+        result.push_str(data?.to_string().as_str());
+      }
+
+      Ok(result)
+    },
+    StartExecResults::Detached => Ok("Detached".to_string()),
+  }
 }

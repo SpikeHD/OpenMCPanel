@@ -72,19 +72,80 @@ pub fn register_routes(app: &mut Server<State>) {
     Ok(response)
   });
 
-  app.at("/api/stop/:name").post(|req: tide::Request<State>| async move {
-    let name = req.param("name").expect("Failed to get name");
+  app.at("/api/stop/:id").post(|req: tide::Request<State>| async move {
+    let id = req.param("id").expect("Failed to get id");
 
-    let result = match docker::stop_minecraft_container(name).await {
+    let result = match docker::stop_minecraft_container(id).await {
       Ok(_) => DockerResult {
         success: true,
-        message: format!("Stopped container {}", name),
+        message: format!("Stopped container {}", id),
       },
       Err(e) => {
-        log!("Failed to stop container {}: {}", name, e);
+        log!("Failed to stop container {}: {}", id, e);
         DockerResult {
           success: false,
-          message: format!("Failed to stop container {}: {}", name, e),
+          message: format!("Failed to stop container {}: {}", id, e),
+        }
+      },
+    };
+
+    let mut response = tide::Response::new(
+      if result.success {
+        200
+      } else {
+        500
+      }
+    );
+
+    response.set_body(serde_json::to_string(&result).unwrap_or_default());
+
+    Ok(response)
+  });
+
+  app.at("/api/start/:id").post(|req: tide::Request<State>| async move {
+    let id = req.param("id").expect("Failed to get id");
+
+    let result = match docker::start_minecraft_container(id).await {
+      Ok(_) => DockerResult {
+        success: true,
+        message: format!("Started container {}", id),
+      },
+      Err(e) => {
+        log!("Failed to start container {}: {}", id, e);
+        DockerResult {
+          success: false,
+          message: format!("Failed to start container {}: {}", id, e),
+        }
+      },
+    };
+
+    let mut response = tide::Response::new(
+      if result.success {
+        200
+      } else {
+        500
+      }
+    );
+
+    response.set_body(serde_json::to_string(&result).unwrap_or_default());
+
+    Ok(response)
+  });
+
+  app.at("/api/command/:id").post(|mut req: tide::Request<State>| async move {
+    let command: Vec<String> = req.body_json().await.expect("Failed to parse JSON");
+    let id = req.param("id").expect("Failed to get id");
+
+    let result = match docker::run_in_container(id, &command).await {
+      Ok(result) => DockerResult {
+        success: true,
+        message: result,
+      },
+      Err(e) => {
+        log!("Failed to run command in container {}: {}", id, e);
+        DockerResult {
+          success: false,
+          message: format!("Failed to run command in container {}: {}", id, e),
         }
       },
     };
