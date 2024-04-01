@@ -32,7 +32,7 @@ static IMAGE: &str = "itzg/minecraft-server";
 
 pub async fn init() {
   // Pull the image so we can use it
-  let docker = bollard::Docker::connect_with_local_defaults().unwrap();
+  let docker = bollard::Docker::connect_with_local_defaults().expect("Failed to connect to Docker");
   let stream = docker.create_image(
     Some(CreateImageOptions {
       from_image: IMAGE,

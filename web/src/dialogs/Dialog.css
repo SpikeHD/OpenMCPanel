@@ -1,0 +1,26 @@
+.dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.dialog {
+  z-index: 1001;
+  background-color: var(--footer);
+  border-radius: 6px;
+  padding: 20px;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 50%;
+  max-width: 500px;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}

@@ -89,7 +89,19 @@ function ServerCard(props: CardProps) {
                 )
               }
 
-              <Icon icon="wrench" />
+              <Icon
+                icon="wrench"
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent('open-dialog', {
+                    detail: {
+                      kind: 'config',
+                      data: {
+                        id: props.id
+                      }
+                    }
+                  }))
+                }}
+              />
             </div>
           ) : (
             <div class="card-details">

@@ -14,9 +14,7 @@ export function Sidebar() {
       </Link>
       <Link href="/manage" class="sidebar-item">Servers</Link>
       <Link href="/monitor" class="sidebar-item">Monitor</Link>
-      <a href="#" class="sidebar-item deploy">
-        Deploy
-      </a>
+      <Link href="/deploy" class="sidebar-item deploy">Deploy</Link>
     </div>
   )
 }

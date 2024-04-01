@@ -35,7 +35,7 @@
   height: 60px;
 }
 
-.deploy {
+.sidebar-item.deploy {
   margin-top: 20px;
   background: var(--text);
   color: var(--footer);

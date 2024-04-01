@@ -1,17 +1,42 @@
 import { render } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import Router, { CustomHistory } from 'preact-router';
-import { HashHistory, createHashHistory } from 'history';
+import { createHashHistory } from 'history';
 
 import { Deploy } from './pages/deploy/Deploy';
-import { Manage } from './pages/manage/Manage';
 import { ManageList } from './pages/manage/ManageList';
 import { Sidebar } from './components/Sidebar';
-
-import './style.css';
 import { Monitor } from './pages/monitor/Monitor';
 import { Home } from './pages/home/Home';
 
+import './style.css';
+import { ConfigDialog } from './dialogs/ConfigDialog';
+
+interface Dialog {
+  kind: 'deploy' | 'config' | 'general'
+  data: any
+}
+
 export function App() {
+  const [dialog, setDialog] = useState(null)
+
+  useEffect(() => {
+    const dialogFn = (e: CustomEvent<Dialog>) => {
+      setDialog(e.detail)
+    }
+    const dialogCloseFn = () => {
+      setDialog(null)
+    }
+
+    window.addEventListener('open-dialog', dialogFn)
+    window.addEventListener('close-dialog', dialogCloseFn)
+
+    return () => {
+      window.removeEventListener('open-dialog', dialogFn)
+      window.removeEventListener('close-dialog', dialogCloseFn)
+    }
+  }, [])
+
 	return (
     <>
       <Sidebar />
@@ -22,9 +47,16 @@ export function App() {
           <Deploy path="/deploy" />
           <Monitor path="/monitor/:id" />
           <ManageList path="/manage" />
-          <Manage path="/manage/:id" />
         </Router>
       </div>
+
+      {
+        dialog && (
+          dialog.kind === 'config' && (
+            <ConfigDialog id={dialog.data.id} />
+          )
+        )
+      }
     </>
 	);
 }

@@ -73,7 +73,7 @@ fn main() {
 
     state = web::server::State::new(username.trim().to_string(), pwd);  
   } else {
-    warn!("Running in no-auth mode. This is insecure and should only be used when developing.");
+    error!("Running in no-auth mode. This is insecure and should only be used when developing.");
     state = web::server::State::new("".to_string(), vec![]);
   }
 

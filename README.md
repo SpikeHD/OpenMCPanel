@@ -21,3 +21,4 @@ TODO: write docs on this
 
 * [ ] Multilingual support
 * [ ] Remote Docker host support
+* [ ] Custom .jar support
