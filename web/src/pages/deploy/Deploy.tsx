@@ -36,7 +36,10 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
   }
 
   const optionType = option[1].options ? 'select' : (
-    typeof option[1].default === 'boolean' || typeof option[1].placeholder === 'boolean' ? 'checkbox' : 'text'
+    typeof option[1].default === 'boolean' || typeof option[1].placeholder === 'boolean' ? 'checkbox' : (
+      // Check if number, else text
+      typeof option[1].default === 'number' || typeof option[1].placeholder === 'number' ? 'number' : 'text'
+    )
   )
 
   return (
@@ -80,6 +83,12 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
           ) : (
             <input value={option[1].default || ''} type="text" id={option[0]} placeholder={option[1]?.placeholder || ''}/>
           )
+        )
+      }
+
+      {
+        optionType === 'number' && (
+          <input value={option[1].default || ''} type="number" id={option[0]} placeholder={option[1]?.placeholder || ''}/>
         )
       }
     </div>

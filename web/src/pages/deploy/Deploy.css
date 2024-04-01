@@ -1,6 +1,28 @@
+.deploy input[type="text"],
+.deploy input[type="textarea"],
+.deploy input[type="number"],
+select {
+  width: 100%;
+}
+
+#content .deploy {
+  height: 100vh;
+  overflow-y: auto;
+}
+
 .deploy-form {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+
+  height: 100%;
+}
+
+.option {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 }

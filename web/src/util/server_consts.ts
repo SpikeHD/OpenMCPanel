@@ -1,8 +1,8 @@
 interface ServerConfig {
   [key: string]: {
     [key: string]: {
-      default: string | boolean;
-      placeholder?: string | boolean;
+      default: string | number | boolean;
+      placeholder?: string | number | boolean;
       // Extra info for user
       note?: string;
       // If specified, this will be a select list
@@ -16,8 +16,8 @@ interface ServerConfig {
 }
 
 export function envToReadable(env: string) {
-  // Remove underscores and capitalize first letter of each word
-  return env.split('_').map(e => e.charAt(0).toUpperCase() + e.slice(1)).join(' ')
+  // Remove underscores and captialize the whole word
+  return env.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 }
 
 export function serverTypes() {
@@ -31,31 +31,36 @@ export function serverTypeConfig(serverType: string) {
 
 export const serverConfigs: ServerConfig = {
   ALL: {
-    VERSION: {
-      default: '',
-      placeholder: 'latest'
-    },
-    MAX_PLAYERS: {
-      default: '20',
-      placeholder: '20'
-    },
     SERVER_NAME: {
       default: 'Minecraft Server',
       placeholder: 'Minecraft Server',
       note: 'Primarily for identifying the container, but also for things like BungeeCord.'
     },
+    VERSION: {
+      default: '',
+      placeholder: 'latest'
+    },
+    MAX_PLAYERS: {
+      default: 20,
+      placeholder: 20
+    },
     MOTD: {
       default: '',
       placeholder: 'A Minecraft Server'
-    },
-    SEED: {
-      default: '',
-      placeholder: ''
     },
     DIFFICULTY: {
       default: 'easy',
       placeholder: 'easy',
       options: ['peaceful', 'easy', 'normal', 'hard']
+    },
+    MODE: {
+      default: 'survival',
+      placeholder: 'survival',
+      options: ['survival', 'creative', 'adventure', 'spectator']
+    },
+    SEED: {
+      default: '',
+      placeholder: ''
     },
     WHITELIST: {
       default: '',
@@ -73,11 +78,6 @@ export const serverConfigs: ServerConfig = {
       default: '',
       placeholder: 'https://...'
     },
-    MODE: {
-      default: 'survival',
-      placeholder: 'survival',
-      options: ['survival', 'creative', 'adventure', 'spectator']
-    }
   },
   ALL_ADVANCED: {
     CUSTOM_IMAGE: {

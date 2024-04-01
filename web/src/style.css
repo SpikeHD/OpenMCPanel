@@ -2,6 +2,8 @@
 
 :root {
   --text: #cef1fd;
+  /* basically the same, but semitransparent */
+  --text-placeholder: #cef1fd99;
   --background: #1c2129;
   --primary: #7ae4fe;
   --secondary: #0127aa;
@@ -38,6 +40,8 @@ a {
 
   height: 100%;
   width: 100%;
+
+  overflow: hidden;
 }
 
 #content {
@@ -47,4 +51,44 @@ a {
 
 h1 {
   font-weight: 900;
+}
+
+input[type="text"],
+input[type="textarea"],
+input[type="number"] {
+  border: none;
+  border-bottom: 1px solid var(--text);
+
+  padding: 6px;
+  margin: 6px 0 6px 0;
+
+  font-size: 16px;
+
+  background: none;
+}
+
+/* input[type="textarea"] {
+  border: 1px solid var(--text);
+  border-radius: 6px;
+} */
+
+input[type="text"]::placeholder,
+input[type="textarea"]::placeholder {
+  color: var(--text-placeholder);
+}
+
+select {
+  border: none;
+  border-bottom: 1px solid var(--text);
+
+  padding: 6px;
+  margin: 6px 0 6px 0;
+
+  font-size: 16px;
+
+  background: none;
+}
+
+option {
+  background-color: var(--background);
 }
