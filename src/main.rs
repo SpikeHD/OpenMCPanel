@@ -33,6 +33,9 @@ struct Opts {
 
   #[options(help = "Check for all required dependencies")]
   check: bool,
+
+  #[options(help = "Disable authentication. For local development only, don't use this.")]
+  no_auth: bool,
 }
 
 fn main() {
@@ -73,11 +76,13 @@ fn main() {
   let state = web::server::State::new(username.trim().to_string(), pwd);
   let mut app = tide::with_state(state);
 
-  app.with(tide_http_auth::Authentication::new(
-    tide_http_auth::BasicAuthScheme {},
-  ));
+  if !args.no_auth {
+    app.with(tide_http_auth::Authentication::new(
+      tide_http_auth::BasicAuthScheme {},
+    ));
 
-  app.with(middleware::AuthMiddleware {});
+    app.with(middleware::AuthMiddleware {});
+  }
 
   // Server index.html at the root
   app

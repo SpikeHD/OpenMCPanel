@@ -16,3 +16,8 @@ TODO: write docs on this
 # Recommendations
 
 * [fail2ban](https://github.com/fail2ban/fail2ban) - Protect from brute force attacks
+
+# TODO
+
+* [ ] Multilingual support
+* [ ] Remote Docker host support

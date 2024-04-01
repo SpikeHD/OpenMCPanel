@@ -1,0 +1,44 @@
+.sidebar {
+  height: 100%;
+  width: var(--sidebar-width);
+
+  background-color: var(--footer);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.sidebar-item {
+  padding: 10px;
+  width: 80%;
+  width: 60%;
+
+  color: var(--text);
+  font-weight: bold;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+
+  transition: all 0.1s ease;
+}
+
+.sidebar-item:hover {
+  transform: scale(1.1);
+}
+
+.sidebar-icon {
+  width: 80%;
+  /* TODO temporary until I get an icon */
+  height: 60px;
+}
+
+.deploy {
+  margin-top: 20px;
+  background: var(--text);
+  color: var(--footer);
+
+  border-radius: 6px;
+}
