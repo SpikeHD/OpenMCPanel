@@ -28,5 +28,18 @@ export async function getRunningContainers() {
 
 export async function getStatus(id: string) {
   const result = await fetch(`/api/container/${id}`)
-  return result.json() as Promise<Status>
+  const json: Status = await result.json()
+
+  // If icon is empty, set to default
+  if (!json.icon) json.icon = '/server_default.png'
+
+  return json
+}
+
+export async function startContainer(id: string) {
+  await fetch(`/api/start/${id}`, { method: 'POST' })
+}
+
+export async function stopContainer(id: string) {
+  await fetch(`/api/stop/${id}`, { method: 'POST' })
 }

@@ -54,26 +54,34 @@ fn main() {
 
   util::logger::init(args.log.map(|s| s.into()));
 
-  let mut username = String::new();
+  let state;
 
-  if args.username.is_none() {
-    // Prompt for username
-    print!("Username to use while authenticating: ");
+  if !args.no_auth {
+    let mut username = String::new();
+
+    if args.username.is_none() {
+      // Prompt for username
+      print!("Username to use while authenticating: ");
+      std::io::stdout().flush().unwrap();
+      std::io::stdin().read_line(&mut username).unwrap();
+    }
+  
+    // Prompt for password
+    print!("Password to use while authenticating: ");
     std::io::stdout().flush().unwrap();
-    std::io::stdin().read_line(&mut username).unwrap();
-  }
+    let pwd = sha2::Sha256::digest(read_password().unwrap().as_bytes()).to_vec();
 
-  // Prompt for password
-  print!("Password to use while authenticating: ");
-  std::io::stdout().flush().unwrap();
-  let pwd = sha2::Sha256::digest(read_password().unwrap().as_bytes()).to_vec();
+    state = web::server::State::new(username.trim().to_string(), pwd);  
+  } else {
+    warn!("Running in no-auth mode. This is insecure and should only be used when developing.");
+    state = web::server::State::new("".to_string(), vec![]);
+  }
 
   // Pull the docker image
   log!("Pulling minecraft-server Docker image");
   async_std::task::block_on(util::docker::init());
   log!("Done!");
 
-  let state = web::server::State::new(username.trim().to_string(), pwd);
   let mut app = tide::with_state(state);
 
   if !args.no_auth {

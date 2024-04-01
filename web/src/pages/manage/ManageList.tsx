@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
-import { getContainers, Container, Status } from '../../util/docker';
+import { getContainers, Container, Status, getStatus, stopContainer, startContainer } from '../../util/docker';
 import './ManageList.css'
+import { Icon } from '../../util/icon';
 
 interface Props {
   path: string;
@@ -35,13 +36,26 @@ export function ManageList(props: Props) {
 }
 
 function ServerCard(props: CardProps) {
-  const [details, setDetails] = useState({} as Status)
+  const [details, setDetails] = useState({
+    icon: '/server_default.png',
+    online: false,
+    players: 0,
+    max_players: 0,
+  } as Status)
   const [hovered, setHovered] = useState(false)
 
   useEffect(() => {
     ;(async () => {
-      // TODO get icon and stuff
-    }) 
+      setDetails(await getStatus(props.id))
+
+      // Every 3 seconds, update the status
+      const updateIntv = setInterval(async () => {
+        setDetails(await getStatus(props.id))
+      }, 3000)
+
+      // Cleanup interval
+      return () => clearInterval(updateIntv)
+    })()
   }, [])
 
   return (
@@ -50,20 +64,42 @@ function ServerCard(props: CardProps) {
       onClick={props.onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      style={`background-image: url(${details.icon})`}
     >
-      <div class="card-img">
-        <img src={details.icon} />
-      </div>
-
       <div class="card-content">
         {
           hovered ? (
             <div class="card-controls">
-              <div class="manage-button">Configure</div>
+              {
+                details.online ? (
+                  <Icon
+                    icon="pause"
+                    onClick={() => {
+                      stopContainer(props.id)
+                    }}
+                  />
+                ) : (
+                  <Icon
+                    icon="play"
+                    onClick={() => {
+                      startContainer(props.id)
+                    }}
+                  />
+                )
+              }
+
+              <Icon icon="wrench" />
             </div>
           ) : (
-            <div class="card-title">
-              <span>{props.name}</span>
+            <div class="card-details">
+              <div class="card-title">
+                <span>{props.name.replace(/^\//, '')}</span>
+                <div class={`${details.online ? 'online' : 'offline'}-indicator`} />
+              </div>
+
+              <div class="card-players">
+                <span>{details.players} / {details.max_players} players online</span>
+              </div>
             </div>
           )
         }

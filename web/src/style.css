@@ -10,6 +10,9 @@
   --footer: #0d1117;
 
   --sidebar-width: 7em;
+
+  --online: #2eff85;
+  --offline: #ff2e2e;
 }
 
 body {
@@ -20,7 +23,7 @@ body {
   margin: 0;
 
   height: 100vh;
-  width: calc(100vw - var(--sidebar-width));
+  width: 100vw;
 }
 
 a {
@@ -39,6 +42,7 @@ a {
 
 #content {
   margin-left: 12px;
+  width: 100%;
 }
 
 h1 {
