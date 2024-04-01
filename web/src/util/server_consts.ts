@@ -15,6 +15,20 @@ interface ServerConfig {
   }
 }
 
+export function envToReadable(env: string) {
+  // Remove underscores and capitalize first letter of each word
+  return env.split('_').map(e => e.charAt(0).toUpperCase() + e.slice(1)).join(' ')
+}
+
+export function serverTypes() {
+  // Ignore JVM, ALL, ALL_ADVANCED
+  return Object.keys(serverConfigs).filter(e => !['JVM', 'ALL', 'ALL_ADVANCED'].includes(e))
+}
+
+export function serverTypeConfig(serverType: string) {
+  return serverConfigs[serverType]
+}
+
 export const serverConfigs: ServerConfig = {
   ALL: {
     VERSION: {
@@ -46,12 +60,14 @@ export const serverConfigs: ServerConfig = {
     WHITELIST: {
       default: '',
       placeholder: '',
-      note: 'Comma separated list of usernames'
+      note: 'Comma separated list of usernames',
+      size: 'large'
     },
     OPS: {
       default: '',
       placeholder: '',
-      note: 'Comma separated list of usernames'
+      note: 'Comma separated list of usernames',
+      size: 'large'
     },
     ICON: {
       default: '',
