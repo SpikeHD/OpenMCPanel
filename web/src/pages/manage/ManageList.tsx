@@ -66,6 +66,7 @@ function ServerCard(props: CardProps) {
       onMouseLeave={() => setHovered(false)}
       style={`background-image: url(${details.icon})`}
     >
+      <div class={`${details.online ? 'online' : 'offline'}-indicator`} />
       <div class="card-content">
         {
           hovered ? (
@@ -94,7 +95,6 @@ function ServerCard(props: CardProps) {
             <div class="card-details">
               <div class="card-title">
                 <span>{props.name.replace(/^\//, '')}</span>
-                <div class={`${details.online ? 'online' : 'offline'}-indicator`} />
               </div>
 
               <div class="card-players">

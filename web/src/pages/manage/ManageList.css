@@ -5,6 +5,7 @@
 }
 
 .server-card {
+  position: relative;
   width: 12em;
   height: 12em;
   
@@ -77,8 +78,13 @@
 
 .offline-indicator,
 .online-indicator {
-  height: 0.5em;
-  width: 0.5em;
+  position: absolute;
+
+  top: 0.5em;
+  right: 0.5em;
+
+  height: 0.8em;
+  width: 0.8em;
 
   border-radius: 50%;
 }
