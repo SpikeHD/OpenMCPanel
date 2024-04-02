@@ -44,6 +44,18 @@ export async function stopContainer(id: string) {
   await fetch(`/api/stop/${id}`, { method: 'POST' })
 }
 
-export async function deployContainer(id: string) {
-  await fetch(`/api/deploy/${id}`, { method: 'POST' })
+export async function deployContainer(name: string, port: number, kind: string, version: string, options: any) {
+  return await fetch(`/api/deploy`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name,
+      port,
+      kind,
+      version,
+      additional_options: options
+    })
+  })
 }

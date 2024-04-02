@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import './Deploy.css'
 import { envToReadable, envToReadableSmall, serverTypeConfig, serverTypes } from '../../util/server_consts';
 import { Icon } from '../../util/icon';
+import { deployContainer } from '../../util/docker';
 
 interface Props {
   path: string;
@@ -10,8 +11,26 @@ interface Props {
 export function Deploy(props: Props) {
   const [config, setConfig] = useState({})
 
-  const deploy = () => {
+  const deploy = async () => {
+    showDialog('Deploying (this may take a moment)...')
+    const res = await deployContainer(
+      config['SERVER_NAME'],
+      config['PORT'],
+      config['TYPE'],
+      config['VERSION'],
+      // Filter out the previous values that are not needed, and convert bools and numbers to strings
+      Object.fromEntries(Object.entries(config).filter(([k, v]) => {
+        return k !== 'NAME' && k !== 'PORT' && k !== 'TYPE' && k !== 'VERSION'
+      }).map(([k, v]) => {
+        return [k, v.toString()]
+      }))
+    )
 
+    console.log(res)
+
+    // Close dialog, open server list
+    window.dispatchEvent(new CustomEvent('close-dialog'))
+    window.location.hash = '/manage'
   }
 
   return (

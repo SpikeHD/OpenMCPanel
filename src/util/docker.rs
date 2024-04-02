@@ -176,9 +176,30 @@ pub async fn deploy_minecraft_container(
     image: Some(IMAGE.to_string()),
     env: Some(vec![
       "EULA=true".to_string(),
-      format!("VERSION={}", opts.version),
-      format!("TYPE={}", opts.kind),
-      format!("PORT={}", opts.port.to_string()),
+      format!(
+        "VERSION={}",
+        if opts.version.is_empty() {
+          "latest".to_string()
+        } else {
+          opts.version.clone()
+        }
+      ),
+      format!(
+        "TYPE={}",
+        if opts.kind.is_empty() {
+          "VANILLA".to_string()
+        } else {
+          opts.kind.clone()
+        }
+      ),
+      format!(
+        "PORT={}",
+        if opts.port == 0 {
+          25565
+        } else {
+          opts.port
+        }
+      ),
     ]),
     host_config: Some(bollard::models::HostConfig {
       port_bindings: Some(
@@ -207,18 +228,24 @@ pub async fn deploy_minecraft_container(
 
   if let Some(additional_options) = &opts.additional_options {
     for (key, value) in additional_options {
+      if value.is_empty() {
+        continue;
+      }
+
       create_opts
         .env
         .as_mut()
         .unwrap()
         .push(format!("{}={}", key, value));
     }
+
+    log!("Additional options: {:?}", create_opts.env);
   }
 
   let container = docker
     .create_container(
       Some(CreateContainerOptions {
-        name: opts.name.clone(),
+        name: opts.name.clone().replace(" ", "_"),
         platform: Some("linux".to_string()),
       }),
       create_opts,

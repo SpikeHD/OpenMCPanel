@@ -44,6 +44,10 @@ export const serverConfigs: ServerConfig = {
       placeholder: 'Minecraft Server',
       note: 'Primarily for identifying the container, but also for things like BungeeCord.'
     },
+    PORT: {
+      default: 25565,
+      placeholder: 25565
+    },
     VERSION: {
       default: '',
       placeholder: 'latest'
