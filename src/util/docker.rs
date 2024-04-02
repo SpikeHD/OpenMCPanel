@@ -371,3 +371,24 @@ pub async fn run_in_container(
     StartExecResults::Detached => Ok("Detached".to_string()),
   }
 }
+
+pub async fn get_logs(id: &str) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
+  let docker = bollard::Docker::connect_with_local_defaults().unwrap();
+  let mut logs = docker.logs(
+    id,
+    Some(bollard::container::LogsOptions::<String> {
+      follow: false,
+      stdout: true,
+      stderr: true,
+      ..Default::default()
+    }),
+  );
+
+  let mut result = String::new();
+
+  while let Some(data) = logs.next().await {
+    result.push_str(data?.to_string().as_str());
+  }
+
+  Ok(result)
+}

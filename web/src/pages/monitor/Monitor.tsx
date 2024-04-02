@@ -1,4 +1,6 @@
+import { useState } from 'preact/hooks';
 import './Monitor.css'
+import { LogWindow } from './LogWindow';
 
 interface Props {
   path: string;
@@ -6,10 +8,17 @@ interface Props {
 }
 
 export function Monitor(props: Props) {
+  const [logs, setLogs] = useState('')
+  const [stats, setStats] = useState({})
+
   return (
     <div class="monitor">
       <h1>Monitor</h1>
-      <p>Monitor a server</p>
+
+      <div class="monitor-content">
+        { /* TODO stats (cpu/ram/etc) */ }
+        <LogWindow id={props.id} />
+      </div>
     </div>
   )
 }

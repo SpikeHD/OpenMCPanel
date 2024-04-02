@@ -59,3 +59,8 @@ export async function deployContainer(name: string, port: number, kind: string, 
     })
   })
 }
+
+export async function getLogs(id: string) {
+  const result = await fetch(`/api/logs/${id}`)
+  return result.json()
+}

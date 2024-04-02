@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { getContainers, Container, Status, getStatus, stopContainer, startContainer } from '../../util/docker';
 import './ManageList.css'
 import { Icon } from '../../util/icon';
+import { route } from 'preact-router';
 
 interface Props {
   path: string;
@@ -100,6 +101,13 @@ function ServerCard(props: CardProps) {
                       }
                     }
                   }))
+                }}
+              />
+
+              <Icon
+                icon="terminal"
+                onClick={() => {
+                  route(`/monitor/${props.id}`)
                 }}
               />
             </div>

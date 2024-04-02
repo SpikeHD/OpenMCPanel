@@ -13,7 +13,7 @@ export function Deploy(props: Props) {
 
   const deploy = async () => {
     showDialog('Deploying (this may take a moment)...')
-    const res = await deployContainer(
+    const req = await deployContainer(
       config['SERVER_NAME'],
       config['PORT'],
       config['TYPE'],
@@ -25,8 +25,13 @@ export function Deploy(props: Props) {
         return [k, v.toString()]
       }))
     )
+    
+    const res = await req.json()
 
-    console.log(res)
+    if (!res.success) {
+      showDialog('Failed to deploy server: ' + res.error)
+      return
+    }
 
     // Close dialog, open server list
     window.dispatchEvent(new CustomEvent('close-dialog'))

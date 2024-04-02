@@ -1,0 +1,13 @@
+.log-window {
+  width: 80%;
+  height: 80%;
+
+  background: #000;
+  color: #fff;
+
+  overflow-y: auto;
+
+  /* Make sure text wraps */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
