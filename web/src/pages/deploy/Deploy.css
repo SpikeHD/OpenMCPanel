@@ -7,16 +7,47 @@ select {
 
 #content .deploy {
   height: 100vh;
-  overflow-y: auto;
 }
 
 .deploy-form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 
   height: 100%;
+}
+
+.base-options,
+.advanced-options,
+.mod-options {
+  display: grid;
+  grid-template-rows: repeat(auto-fill, minmax(6em, 1fr));
+
+  height: 100%;
+  width: 30%;
+  transition: all 0.2s;
+  overflow-y: auto;
+}
+
+.base-options:hover,
+.advanced-options:hover,
+.mod-options:hover {
+  width: 60%;
+}
+
+.base-options {
+  padding-right: 2em;
+  border-right: 1px solid var(--text);
+}
+
+.advanced-options {
+  padding: 0 2em;
+  border-right: 1px solid var(--text);
+}
+
+.mod-options {
+  padding-left: 2em;
 }
 
 .option {
@@ -26,3 +57,8 @@ select {
   justify-content: flex-start;
   align-items: flex-start;
 }
+
+.option.checkbox {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+} 

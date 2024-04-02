@@ -15,9 +15,17 @@ interface ServerConfig {
   }
 }
 
+// Remove underscores and captialize the whole word
 export function envToReadable(env: string) {
-  // Remove underscores and captialize the whole word
   return env.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+}
+
+// Remove underscores and only make first letter uppercase
+export function envToReadableSmall(env: string) {
+  return env.replace(/_/g, ' ')
+    .split(' ')
+    .map((s) => s.charAt(0).toUpperCase() + s.substring(1).toLowerCase())
+    .join(' ')
 }
 
 export function serverTypes() {

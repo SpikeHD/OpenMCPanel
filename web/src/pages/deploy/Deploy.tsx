@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import './Deploy.css'
-import { envToReadable, serverTypeConfig } from '../../util/server_consts';
+import { envToReadable, envToReadableSmall, serverTypeConfig, serverTypes } from '../../util/server_consts';
 
 interface Props {
   path: string;
@@ -15,8 +15,42 @@ export function Deploy(props: Props) {
       
       <div class="deploy-form">
         <div class="base-options">
+          <h2>
+            Basic Options
+          </h2>
+
+          {
+            optionToElement(['TYPE', {
+              default: 'VANILLA',
+              placeholder: 'VANILLA',
+              options: serverTypes()
+            }], setConfig)
+          }
           {
             Object.entries(serverTypeConfig('ALL')).map(c => (
+              optionToElement(c, setConfig)
+            ))
+          }
+        </div>
+
+        <div class="advanced-options">
+          <h2>
+            Advanced Options
+          </h2>
+          {
+            Object.entries(serverTypeConfig('ALL_ADVANCED')).map(c => (
+              optionToElement(c, setConfig)
+            ))
+          }
+        </div>
+
+        <div class="mod-options">
+          <h2>
+            Server-type Specific Options
+          </h2>
+
+          {
+            Object.entries(serverTypeConfig(config['TYPE'] || 'VANILLA')).map(c => (
               optionToElement(c, setConfig)
             ))
           }
@@ -43,7 +77,7 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
   )
 
   return (
-    <div class="option">
+    <div class={`option ${optionType}`}>
       <label for={option[0]}>{envToReadable(option[0])}</label>
       {
         optionType === 'select' && (
@@ -56,7 +90,7 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
           }}>
             {
               option[1].options.map(o => (
-                <option value={o as string}>{o as string}</option>
+                <option value={o as string}>{envToReadableSmall(o as string)}</option>
               ))
             }
           </select>

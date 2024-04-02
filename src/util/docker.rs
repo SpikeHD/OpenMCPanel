@@ -44,7 +44,13 @@ pub async fn init() {
   );
 
   let stream = stream.for_each(|output| {
-    log!("{}", output.unwrap().status.unwrap());
+    log!(
+      "{}",
+      output
+        .expect("Failed to get output")
+        .status
+        .expect("Failed to get output status")
+      );
   });
 
   stream.await;
