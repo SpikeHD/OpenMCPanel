@@ -9,6 +9,8 @@ interface Props {
 export function Deploy(props: Props) {
   const [config, setConfig] = useState({})
 
+  console.log(config)
+
   return (
     <div class="deploy">
       <h1>Deploy</h1>
@@ -24,11 +26,11 @@ export function Deploy(props: Props) {
               default: 'VANILLA',
               placeholder: 'VANILLA',
               options: serverTypes()
-            }], setConfig)
+            }], setConfig, config)
           }
           {
             Object.entries(serverTypeConfig('ALL')).map(c => (
-              optionToElement(c, setConfig)
+              optionToElement(c, setConfig, config)
             ))
           }
         </div>
@@ -39,7 +41,7 @@ export function Deploy(props: Props) {
           </h2>
           {
             Object.entries(serverTypeConfig('ALL_ADVANCED')).map(c => (
-              optionToElement(c, setConfig)
+              optionToElement(c, setConfig, config)
             ))
           }
         </div>
@@ -51,7 +53,7 @@ export function Deploy(props: Props) {
 
           {
             Object.entries(serverTypeConfig(config['TYPE'] || 'VANILLA')).map(c => (
-              optionToElement(c, setConfig)
+              optionToElement(c, setConfig, config)
             ))
           }
         </div>
@@ -60,11 +62,17 @@ export function Deploy(props: Props) {
   )
 }
 
-export function optionToElement(option: [string, any], setConfig: (config: any) => void) {
+export function optionToElement(option: [string, any], setConfig: (config: any) => void, config: any = {}) {
   // If there is a default value, set it in the config
-  if (option[1].default) {
+  if ('default' in option[1] && !(option[0] in config)) {
+    console.log('doing default garbage')
     setConfig((config) => {
-      config[option[0]] = option[1].default
+      // Only change if it doesn't exist
+      if (!(option[0] in config)) {
+        config[option[0]] = option[1].default
+        return { ...config }
+      }
+
       return config
     })
   }
@@ -81,13 +89,15 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
       <label for={option[0]}>{envToReadable(option[0])}</label>
       {
         optionType === 'select' && (
-          <select value={option[1].default || ''} id={option[0]} onChange={(e) => {
-            setConfig((config) => {
-              // @ts-expect-error cry about it
-              config[option[0]] = e.target.value
-              return config
-            })
-          }}>
+          <select
+            id={option[0]}
+            onChange={(e) => {
+              setConfig((config) => {
+                // @ts-expect-error cry about it
+                config[option[0]] = e.target.value
+                return { ...config }
+              })
+            }}>
             {
               option[1].options.map(o => (
                 <option value={o as string}>{envToReadableSmall(o as string)}</option>
@@ -99,13 +109,18 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
 
       {
         optionType === 'checkbox' && (
-          <input value={option[1].default || ''} type="checkbox" id={option[0]} onChange={(e) => {
-            setConfig((config) => {
-              // @ts-expect-error cry about it
-              config[option[0]] = e.target.checked
-              return config
-            })
-          }} />
+          <input
+            checked={
+              option[0] in config ? config[option[0]] : option[1].default || false
+            }
+            type="checkbox" id={option[0]} 
+            onChange={() => {
+              setConfig((config) => {
+                config[option[0]] = !config[option[0]]
+                return { ...config }
+              })
+            }}
+          />
         )
       }
 
@@ -113,16 +128,49 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
         // May have a "size" field, which is either "large" or "small"
         optionType === 'text' && (
           (option[1].size && option[1].size === 'large') ? (
-            <input value={option[1].default || ''} type="textarea" id={option[0]} placeholder={option[1]?.placeholder || ''} />
+            <input
+              value={config[option[0]] || option[1].default || ''}
+              type="textarea" id={option[0]}
+              placeholder={option[1]?.placeholder || ''}
+              onInput={(e) => {
+                setConfig((config) => {
+                  // @ts-expect-error cry about it
+                  config[option[0]] = e.target.value
+                  return { ...config }
+                })
+              }}
+            />
           ) : (
-            <input value={option[1].default || ''} type="text" id={option[0]} placeholder={option[1]?.placeholder || ''}/>
+            <input
+              value={config[option[0]] || option[1].default || ''}
+              type="text" id={option[0]}
+              placeholder={option[1]?.placeholder || ''}
+              onInput={(e) => {
+                setConfig((config) => {
+                  // @ts-expect-error cry about it
+                  config[option[0]] = e.target.value
+                  return { ...config }
+                })
+              }}
+            />
           )
         )
       }
 
       {
         optionType === 'number' && (
-          <input value={option[1].default || ''} type="number" id={option[0]} placeholder={option[1]?.placeholder || ''}/>
+          <input
+            value={config[option[0]] || option[1].default || ''}
+            type="number" id={option[0]}
+            placeholder={option[1]?.placeholder || ''}
+            onInput={(e) => {
+              setConfig((config) => {
+                // @ts-expect-error cry about it
+                config[option[0]] = e.target.value
+                return { ...config }
+              })
+            }}
+          />
         )
       }
     </div>

@@ -33,7 +33,7 @@ select {
 .base-options:hover,
 .advanced-options:hover,
 .mod-options:hover {
-  width: 60%;
+  width: 40%;
 }
 
 .base-options {
