@@ -43,3 +43,7 @@ export async function startContainer(id: string) {
 export async function stopContainer(id: string) {
   await fetch(`/api/stop/${id}`, { method: 'POST' })
 }
+
+export async function deployContainer(id: string) {
+  await fetch(`/api/deploy/${id}`, { method: 'POST' })
+}

@@ -11,6 +11,7 @@ import { Home } from './pages/home/Home';
 
 import './style.css';
 import { ConfigDialog } from './dialogs/ConfigDialog';
+import { Dialog } from './dialogs/Dialog';
 
 interface Dialog {
   kind: 'deploy' | 'config' | 'general'
@@ -51,11 +52,14 @@ export function App() {
       </div>
 
       {
-        dialog && (
-          dialog.kind === 'config' && (
-            <ConfigDialog id={dialog.data.id} />
-          )
-        )
+        dialog && (() => {
+          switch (dialog.kind) {
+            case 'config':
+              return <ConfigDialog id={dialog.data.id} />
+            case 'general':
+              return <Dialog>{dialog.data as string}</Dialog>
+          }
+        })()
       }
     </>
 	);

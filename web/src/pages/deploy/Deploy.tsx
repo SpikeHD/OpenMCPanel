@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import './Deploy.css'
 import { envToReadable, envToReadableSmall, serverTypeConfig, serverTypes } from '../../util/server_consts';
+import { Icon } from '../../util/icon';
 
 interface Props {
   path: string;
@@ -9,7 +10,9 @@ interface Props {
 export function Deploy(props: Props) {
   const [config, setConfig] = useState({})
 
-  console.log(config)
+  const deploy = () => {
+
+  }
 
   return (
     <div class="deploy">
@@ -58,6 +61,12 @@ export function Deploy(props: Props) {
           }
         </div>
       </div>
+
+      <div class="deploy-button-outer" onClick={deploy}>
+        <button class="deploy-button">
+          DEPLOY
+        </button>
+      </div>
     </div>
   )
 }
@@ -65,7 +74,6 @@ export function Deploy(props: Props) {
 export function optionToElement(option: [string, any], setConfig: (config: any) => void, config: any = {}) {
   // If there is a default value, set it in the config
   if ('default' in option[1] && !(option[0] in config)) {
-    console.log('doing default garbage')
     setConfig((config) => {
       // Only change if it doesn't exist
       if (!(option[0] in config)) {
@@ -84,9 +92,25 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
     )
   )
 
+  if (option[1].show === false) {
+    return null
+  }
+
   return (
     <div class={`option ${optionType}`}>
-      <label for={option[0]}>{envToReadable(option[0])}</label>
+      <div class="label">
+        <label for={option[0]}>
+          {envToReadable(option[0])}
+        </label>
+
+        {
+          option[1]?.note && (
+            <Icon icon="info_circle" onClick={() => {
+              showDialog(option[1].note)
+            }} />
+          )
+        }
+      </div>
       {
         optionType === 'select' && (
           <select
@@ -175,4 +199,15 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
       }
     </div>
   )
+}
+
+function showDialog(msg: string) {
+  const event = new CustomEvent('open-dialog', {
+    detail: {
+      kind: 'general',
+      data: msg
+    }
+  })
+
+  window.dispatchEvent(event)
 }

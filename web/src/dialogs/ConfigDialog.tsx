@@ -7,9 +7,7 @@ interface Props {
 
 export function ConfigDialog(props: Props) {
   return (
-    <Dialog onClose={() => {
-      window.dispatchEvent(new CustomEvent('close-dialog'))
-    }}>
+    <Dialog>
       <h2>Configuring {props.id}</h2>
     </Dialog>
   )

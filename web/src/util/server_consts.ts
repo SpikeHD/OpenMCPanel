@@ -97,7 +97,7 @@ export const serverConfigs: ServerConfig = {
     CUSTOM_IMAGE_TAG: {
       default: '',
       placeholder: 'latest',
-      note: 'Use a specific tag of the custom image'
+      note: 'use a specific tag. if a custom image is specified, this will be used as the tag for the official image.'
     },
     CUSTOM_SERVER: {
       default: '',
@@ -257,7 +257,8 @@ export const serverConfigs: ServerConfig = {
     VERSION: {
       default: '',
       placeholder: 'b1.7.3',
-      note: 'Canyon only supports beta 1.7.3'
+      note: 'Canyon only supports beta 1.7.3',
+      show: false,
     },
     CANYON_BUILD: {
       default: '',

@@ -15,7 +15,40 @@ select {
   justify-content: flex-start;
   align-items: center;
 
+  height: 75%;
+}
+
+.deploy-button-outer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  height: 10%;
+  width: 100%;
+}
+
+.deploy-button {
+  background: var(--text);
+  color: var(--background);
+
+  border: none;
+  border-radius: 6px;
+
+  font-size: 2em;
+  font-weight: 900;
+
+  margin-top: 10px;
   height: 100%;
+  width: 90%;
+
+  cursor: pointer;
+
+  transition: all 0.1s;
+}
+
+.deploy-button:hover {
+  filter: brightness(0.8);
 }
 
 .base-options,
@@ -27,7 +60,9 @@ select {
   height: 100%;
   width: 30%;
   transition: all 0.2s;
+  
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .base-options:hover,
@@ -58,7 +93,28 @@ select {
   align-items: flex-start;
 }
 
+.option .label {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .option.checkbox {
   flex-direction: row-reverse;
   justify-content: flex-end;
-} 
+}
+
+.option .icon {
+  width: 1em;
+  height: 1em;
+  margin-left: 0.7em;
+
+  cursor: pointer;
+
+  transition: all 0.1s;
+}
+
+.option .icon:hover {
+  filter: brightness(0.7)
+}
