@@ -27,9 +27,11 @@ export function ManageList(props: Props) {
 
       <div class="server-list">
         {
-          containers.map(c => (
+          containers.length > 0 ? containers.map(c => (
             <ServerCard {...c} onClick={() => console.log('clicked')} />
-          ))
+          )) : (
+            <span class="no-servers">You haven't deployed any servers yet. Why don't you give it a try?</span>
+          )
         }
       </div>
     </div>
