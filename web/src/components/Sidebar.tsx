@@ -9,11 +9,7 @@ export function Sidebar() {
 
       </div>
 
-      <Link href="/" class="sidebar-item">
-        Home
-      </Link>
       <Link href="/manage" class="sidebar-item">Servers</Link>
-      <Link href="/monitor" class="sidebar-item">Monitor</Link>
       <Link href="/deploy" class="sidebar-item deploy">Deploy</Link>
     </div>
   )

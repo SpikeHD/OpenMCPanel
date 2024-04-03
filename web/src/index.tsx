@@ -15,7 +15,7 @@ import { Dialog } from './dialogs/Dialog'
 
 interface Dialog {
   kind: 'deploy' | 'config' | 'general'
-  data: any
+  data: unknown
 }
 
 export function App() {
