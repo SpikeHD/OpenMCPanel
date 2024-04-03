@@ -28,6 +28,16 @@ pub struct Status {
   pub container_status: String,
 }
 
+#[derive(Serialize, Default)]
+pub struct Resources {
+  pub cpu: u64,
+  pub memory: u64,
+  pub memory_limit: u64,
+  pub memory_usage: u64,
+  pub network_rx: u64,
+  pub network_tx: u64,
+}
+
 static IMAGE: &str = "itzg/minecraft-server";
 
 pub async fn init() {
@@ -378,6 +388,7 @@ pub async fn get_logs(id: &str, since: i64) -> Result<String, Box<dyn std::error
     id,
     Some(bollard::container::LogsOptions::<String> {
       since,
+      tail: "10000".to_string(),
       follow: false,
       stdout: true,
       stderr: true,
@@ -392,4 +403,58 @@ pub async fn get_logs(id: &str, since: i64) -> Result<String, Box<dyn std::error
   }
 
   Ok(result)
+}
+
+pub async fn resource_usage(id: &str) -> Result<Resources, Box<dyn std::error::Error + Send + Sync>> {
+  let docker = bollard::Docker::connect_with_local_defaults().unwrap();
+  let mut stats = docker.stats(
+    id,
+    Some(bollard::container::StatsOptions {
+      stream: false,
+      ..Default::default()
+    }),
+  );
+
+  while let Some(data) = stats.next().await {
+    let data = data?;
+
+    // https://stackoverflow.com/a/64148340
+    // CPU
+    let cpu_delta = data.cpu_stats.cpu_usage.total_usage - data.precpu_stats.cpu_usage.total_usage;
+    let system_delta = data.cpu_stats.system_cpu_usage.unwrap_or_default() - data.precpu_stats.system_cpu_usage.unwrap_or_default();
+    let cpu = (cpu_delta as f64 / system_delta as f64 * data.cpu_stats.cpu_usage.percpu_usage.unwrap_or(vec![]).len() as f64 * 100.0) as u64;
+
+    // Memory
+    let memory = data.memory_stats.usage.unwrap_or_default();
+    let memory_limit = data.memory_stats.limit.unwrap_or_default();
+    let memory_usage = data.memory_stats.usage.unwrap_or_default();
+
+    // Network
+    let network_rx;
+    let network_tx;
+
+    match data.network {
+      Some(network) => {
+        network_rx = network.rx_bytes;
+        network_tx = network.tx_bytes;
+      }
+      None => {
+        network_rx = 0;
+        network_tx = 0;
+      }
+    };
+
+    let resources = Resources {
+      cpu,
+      memory,
+      memory_limit,
+      memory_usage,
+      network_rx,
+      network_tx,
+    };
+
+    return Ok(resources);
+  }
+
+  Err("Failed to get stats".into())
 }

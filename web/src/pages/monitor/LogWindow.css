@@ -1,13 +1,21 @@
 .log-window {
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 65%;
+
+  margin-top: 6px;
 
   background: #000;
   color: #fff;
 
   overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
 
   /* Make sure text wraps */
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.log-window pre {
+  white-space: pre-wrap;
+  border-radius: 6px;
 }

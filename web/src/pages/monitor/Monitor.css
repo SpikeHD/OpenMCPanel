@@ -1,11 +1,14 @@
 .monitor {
   height: 100%;
+  width: calc(100vw - var(--sidebar-width))
 }
 
 .monitor-content {
   display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
   height: 100%;
+  width: 100%;
 }

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use tide::Server;
 
-use crate::{log, util::docker};
+use crate::{log, util::docker::{self, Resources}};
 
 use super::server::State;
 
@@ -109,6 +109,25 @@ pub fn register_routes(app: &mut Server<State>) {
 
       let mut response = tide::Response::new(200);
       response.set_body(serde_json::to_string(&logs).unwrap_or_default());
+
+      Ok(response)
+    });
+
+  app
+    .at("/api/resources/:id")
+    .get(|req: tide::Request<State>| async move {
+      let id = req.param("id").expect("Failed to get id");
+
+      let resources = match docker::resource_usage(id).await {
+        Ok(resources) => resources,
+        Err(e) => {
+          log!("Failed to get resources for container {}: {}", id, e);
+          Resources::default()
+        }
+      };
+
+      let mut response = tide::Response::new(200);
+      response.set_body(serde_json::to_string(&resources).unwrap_or_default());
 
       Ok(response)
     });

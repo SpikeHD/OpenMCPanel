@@ -20,8 +20,8 @@ export function LogWindow(props: Props) {
 
       setLastLogPing(Date.now())
       setLogs((l) => {
-        if (req.message != '') {
-          return l + '\n' + req.message
+        if (req.message != '' && !l.includes(req.message)) {
+          return l + req.message
         }
 
         return l
@@ -33,19 +33,28 @@ export function LogWindow(props: Props) {
       }
     }, 1000)
 
-    return () => clearInterval(intv)
-  }, [lastLogPing])
+    // Create scroll event listener
+    const scrollListener = () => {
+      if (ref.current.scrollTop + ref.current.clientHeight < ref.current.scrollHeight - 10) {
+        setManuallyScrolled(true)
+      } else {
+        setManuallyScrolled(false)
+      }
+    }
+
+    // apparently "scroll" doesn't work because of how I have the CSS set up, so I have to use "wheel"
+    // what da hell
+    document.addEventListener('wheel', scrollListener)
+
+    return () => {
+      clearInterval(intv)
+      document.removeEventListener('wheel', scrollListener)
+    }
+  }, [lastLogPing, manuallyScrolled])
 
   return (
     <div class="log-window" ref={ref}>
-      <pre
-        onScroll={() => {
-          setManuallyScrolled(true)
-        }}
-        onScrollEnd={() => {
-          setManuallyScrolled(false)
-        }}
-      >
+      <pre>
         {logs}
       </pre>
     </div>

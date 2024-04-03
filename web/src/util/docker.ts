@@ -16,6 +16,15 @@ export interface Status {
   container_status: string;
 }
 
+export interface Resources {
+  cpu: number;
+  memory: number;
+  memory_usage: number;
+  memory_limit: number;
+  network_rx: number;
+  network_tx: number;
+}
+
 export async function getContainers() {
   const result = await fetch('/api/containers/all')
   return result.json() as Promise<Container[]>
@@ -44,7 +53,7 @@ export async function stopContainer(id: string) {
   await fetch(`/api/stop/${id}`, { method: 'POST' })
 }
 
-export async function deployContainer(name: string, port: number, kind: string, version: string, options: any) {
+export async function deployContainer(name: string, port: number, kind: string, version: string, options: unknown) {
   return await fetch('/api/deploy', {
     method: 'POST',
     headers: {
@@ -64,9 +73,19 @@ export async function getLogs(id: string, since: number) {
   let url = `/api/logs/${id}`
 
   if (since > 0) {
+    // Set to seconds if in milliseconds
+    if (since > 1000000000000) {
+      since = Math.floor(since / 1000)
+    }
+
     url += `?since=${since}`
   }
 
   const result = await fetch(url)
+  return result.json()
+}
+
+export async function getResouces(id: string) {
+  const result = await fetch(`/api/resources/${id}`)
   return result.json()
 }
