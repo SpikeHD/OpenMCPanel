@@ -12,3 +12,20 @@
   height: 100%;
   width: 100%;
 }
+
+.command-input {
+  width: 100%;
+  height: 5%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  margin-top: 6px;
+}
+
+.command-input input {
+  width: 100%;
+  margin-top: 6px;
+}

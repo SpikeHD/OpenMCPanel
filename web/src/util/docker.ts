@@ -89,3 +89,13 @@ export async function getResouces(id: string) {
   const result = await fetch(`/api/resources/${id}`)
   return result.json()
 }
+
+export async function sendCommand(id: string, command: string) {
+  return await fetch(`/api/command/${id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify([ ...command.split(' ') ])
+  })
+}
