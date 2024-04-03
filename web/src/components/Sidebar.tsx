@@ -1,4 +1,4 @@
-import Router, { Link } from 'preact-router'
+import { Link } from 'preact-router'
 
 import './Sidebar.css'
 
