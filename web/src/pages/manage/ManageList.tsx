@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'preact/hooks';
-import { getContainers, Container, Status, getStatus, stopContainer, startContainer } from '../../util/docker';
+import { useEffect, useState } from 'preact/hooks'
+import { getContainers, Container, Status, getStatus, stopContainer, startContainer } from '../../util/docker'
 import './ManageList.css'
-import { Icon } from '../../util/icon';
-import { route } from 'preact-router';
+import { Icon } from '../../util/icon'
+import { route } from 'preact-router'
 
 interface Props {
   path: string;
@@ -16,7 +16,7 @@ export function ManageList(props: Props) {
   const [containers, setContainers]  = useState([])
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       setContainers(await getContainers())
     })()
   }, [])
@@ -46,7 +46,7 @@ function ServerCard(props: CardProps) {
   const [hovered, setHovered] = useState(false)
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       setDetails(await getStatus(props.id))
 
       // Every 3 seconds, update the status

@@ -372,11 +372,12 @@ pub async fn run_in_container(
   }
 }
 
-pub async fn get_logs(id: &str) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
+pub async fn get_logs(id: &str, since: i64) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
   let docker = bollard::Docker::connect_with_local_defaults().unwrap();
   let mut logs = docker.logs(
     id,
     Some(bollard::container::LogsOptions::<String> {
+      since,
       follow: false,
       stdout: true,
       stderr: true,

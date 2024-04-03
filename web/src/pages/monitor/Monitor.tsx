@@ -1,6 +1,6 @@
-import { useState } from 'preact/hooks';
+import { useState } from 'preact/hooks'
 import './Monitor.css'
-import { LogWindow } from './LogWindow';
+import { LogWindow } from './LogWindow'
 
 interface Props {
   path: string;

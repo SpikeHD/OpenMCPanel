@@ -1,8 +1,8 @@
-import { useState } from 'preact/hooks';
+import { useState } from 'preact/hooks'
 import './Deploy.css'
-import { envToReadable, envToReadableSmall, serverTypeConfig, serverTypes } from '../../util/server_consts';
-import { Icon } from '../../util/icon';
-import { deployContainer } from '../../util/docker';
+import { envToReadable, envToReadableSmall, serverTypeConfig, serverTypes } from '../../util/server_consts'
+import { Icon } from '../../util/icon'
+import { deployContainer } from '../../util/docker'
 
 interface Props {
   path: string;

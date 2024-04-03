@@ -82,8 +82,16 @@ pub fn register_routes(app: &mut Server<State>) {
     .at("/api/logs/:id")
     .get(|req: tide::Request<State>| async move {
       let id = req.param("id").expect("Failed to get id");
+      let since = req
+        .url()
+        .query_pairs()
+        .find(|(key, _)| key == "since")
+        .map(|(_, value)| value)
+        .unwrap_or_default()
+        .parse::<i64>()
+        .unwrap_or(0);
 
-      let logs = match docker::get_logs(id).await {
+      let logs = match docker::get_logs(id, since).await {
         Ok(logs) => {
           DockerResult {
             success: true,

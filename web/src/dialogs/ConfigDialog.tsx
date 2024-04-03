@@ -1,5 +1,5 @@
 import './ConfigDialog.css'
-import { Dialog } from './Dialog';
+import { Dialog } from './Dialog'
 
 interface Props {
   id: string;

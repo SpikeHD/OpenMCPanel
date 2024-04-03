@@ -45,7 +45,7 @@ export async function stopContainer(id: string) {
 }
 
 export async function deployContainer(name: string, port: number, kind: string, version: string, options: any) {
-  return await fetch(`/api/deploy`, {
+  return await fetch('/api/deploy', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -60,7 +60,13 @@ export async function deployContainer(name: string, port: number, kind: string, 
   })
 }
 
-export async function getLogs(id: string) {
-  const result = await fetch(`/api/logs/${id}`)
+export async function getLogs(id: string, since: number) {
+  let url = `/api/logs/${id}`
+
+  if (since > 0) {
+    url += `?since=${since}`
+  }
+
+  const result = await fetch(url)
   return result.json()
 }

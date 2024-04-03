@@ -1,17 +1,17 @@
-import { render } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import Router, { CustomHistory } from 'preact-router';
-import { createHashHistory } from 'history';
+import { render } from 'preact'
+import { useEffect, useState } from 'preact/hooks'
+import Router, { CustomHistory } from 'preact-router'
+import { createHashHistory } from 'history'
 
-import { Deploy } from './pages/deploy/Deploy';
-import { ManageList } from './pages/manage/ManageList';
-import { Sidebar } from './components/Sidebar';
-import { Monitor } from './pages/monitor/Monitor';
-import { Home } from './pages/home/Home';
+import { Deploy } from './pages/deploy/Deploy'
+import { ManageList } from './pages/manage/ManageList'
+import { Sidebar } from './components/Sidebar'
+import { Monitor } from './pages/monitor/Monitor'
+import { Home } from './pages/home/Home'
 
-import './style.css';
-import { ConfigDialog } from './dialogs/ConfigDialog';
-import { Dialog } from './dialogs/Dialog';
+import './style.css'
+import { ConfigDialog } from './dialogs/ConfigDialog'
+import { Dialog } from './dialogs/Dialog'
 
 interface Dialog {
   kind: 'deploy' | 'config' | 'general'
@@ -38,7 +38,7 @@ export function App() {
     }
   }, [])
 
-	return (
+  return (
     <>
       <Sidebar />
 
@@ -54,15 +54,15 @@ export function App() {
       {
         dialog && (() => {
           switch (dialog.kind) {
-            case 'config':
-              return <ConfigDialog id={dialog.data.id} />
-            case 'general':
-              return <Dialog>{dialog.data as string}</Dialog>
+          case 'config':
+            return <ConfigDialog id={dialog.data.id} />
+          case 'general':
+            return <Dialog>{dialog.data as string}</Dialog>
           }
         })()
       }
     </>
-	);
+  )
 }
 
-render(<App />, document.getElementById('app'));
+render(<App />, document.getElementById('app'))
