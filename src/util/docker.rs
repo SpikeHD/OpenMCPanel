@@ -60,7 +60,7 @@ pub async fn init() {
         .expect("Failed to get output")
         .status
         .expect("Failed to get output status")
-      );
+    );
   });
 
   stream.await;
@@ -202,14 +202,7 @@ pub async fn deploy_minecraft_container(
           opts.kind.clone()
         }
       ),
-      format!(
-        "PORT={}",
-        if opts.port == 0 {
-          25565
-        } else {
-          opts.port
-        }
-      ),
+      format!("PORT={}", if opts.port == 0 { 25565 } else { opts.port }),
     ]),
     host_config: Some(bollard::models::HostConfig {
       port_bindings: Some(
@@ -255,7 +248,7 @@ pub async fn deploy_minecraft_container(
   let container = docker
     .create_container(
       Some(CreateContainerOptions {
-        name: opts.name.clone().replace(" ", "_"),
+        name: opts.name.clone().replace(' ', "_"),
         platform: Some("linux".to_string()),
       }),
       create_opts,
@@ -382,7 +375,10 @@ pub async fn run_in_container(
   }
 }
 
-pub async fn get_logs(id: &str, since: i64) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
+pub async fn get_logs(
+  id: &str,
+  since: i64,
+) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
   let docker = bollard::Docker::connect_with_local_defaults().unwrap();
   let mut logs = docker.logs(
     id,
@@ -405,7 +401,9 @@ pub async fn get_logs(id: &str, since: i64) -> Result<String, Box<dyn std::error
   Ok(result)
 }
 
-pub async fn resource_usage(id: &str) -> Result<Resources, Box<dyn std::error::Error + Send + Sync>> {
+pub async fn resource_usage(
+  id: &str,
+) -> Result<Resources, Box<dyn std::error::Error + Send + Sync>> {
   let docker = bollard::Docker::connect_with_local_defaults().unwrap();
   let mut stats = docker.stats(
     id,
@@ -415,14 +413,22 @@ pub async fn resource_usage(id: &str) -> Result<Resources, Box<dyn std::error::E
     }),
   );
 
-  while let Some(data) = stats.next().await {
+  if let Some(data) = stats.next().await {
     let data = data?;
 
     // https://stackoverflow.com/a/64148340
     // CPU
     let cpu_delta = data.cpu_stats.cpu_usage.total_usage - data.precpu_stats.cpu_usage.total_usage;
-    let system_delta = data.cpu_stats.system_cpu_usage.unwrap_or_default() - data.precpu_stats.system_cpu_usage.unwrap_or_default();
-    let cpu = (cpu_delta as f64 / system_delta as f64 * data.cpu_stats.cpu_usage.percpu_usage.unwrap_or(vec![]).len() as f64 * 100.0) as u64;
+    let system_delta = data.cpu_stats.system_cpu_usage.unwrap_or_default()
+      - data.precpu_stats.system_cpu_usage.unwrap_or_default();
+    let cpu = (cpu_delta as f64 / system_delta as f64
+      * data
+        .cpu_stats
+        .cpu_usage
+        .percpu_usage
+        .unwrap_or(vec![])
+        .len() as f64
+      * 100.0) as u64;
 
     // Memory
     let memory = data.memory_stats.usage.unwrap_or_default();

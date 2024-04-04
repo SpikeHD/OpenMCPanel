@@ -54,9 +54,7 @@ fn main() {
 
   util::logger::init(args.log.map(|s| s.into()));
 
-  let state;
-
-  if !args.no_auth {
+  let state = if !args.no_auth {
     let mut username = String::new();
 
     if args.username.is_none() {
@@ -65,17 +63,17 @@ fn main() {
       std::io::stdout().flush().unwrap();
       std::io::stdin().read_line(&mut username).unwrap();
     }
-  
+
     // Prompt for password
     print!("Password to use while authenticating: ");
     std::io::stdout().flush().unwrap();
     let pwd = sha2::Sha256::digest(read_password().unwrap().as_bytes()).to_vec();
 
-    state = web::server::State::new(username.trim().to_string(), pwd);  
+    web::server::State::new(username.trim().to_string(), pwd)
   } else {
     error!("Running in no-auth mode. This is insecure and should only be used when developing.");
-    state = web::server::State::new("".to_string(), vec![]);
-  }
+    web::server::State::new("".to_string(), vec![])
+  };
 
   // Pull the docker image
   log!("Pulling minecraft-server Docker image");
