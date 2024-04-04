@@ -22,7 +22,7 @@ export function StatRow(props: Props) {
     return () => {
       clearInterval(intv)
     }
-  }, [stats])
+  }, [])
 
   return (
     <div class="stat-row">

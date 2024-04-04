@@ -16,6 +16,7 @@ select {
   align-items: center;
 
   height: 75%;
+  width: 100%;
 }
 
 .deploy-button-outer {
@@ -58,11 +59,12 @@ select {
   grid-template-rows: repeat(auto-fill, minmax(6em, 1fr));
 
   height: 100%;
-  width: 30%;
+  width: 33%;
   transition: all 0.2s;
   
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-gutter: stable both-edges;
 }
 
 .base-options:hover,
@@ -91,6 +93,8 @@ select {
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+
+  width: 92%;
 }
 
 .option .label {

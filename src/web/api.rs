@@ -135,7 +135,21 @@ pub fn register_routes(app: &mut Server<State>) {
   app
     .at("/api/deploy")
     .post(|mut req: tide::Request<State>| async move {
-      let opts: DeploymentConfig = req.body_json().await.expect("Failed to parse JSON");
+      let opts: DeploymentConfig = match req.body_json().await {
+        Ok(opts) => opts,
+        Err(e) => {
+          log!("Failed to parse JSON: {}", e);
+          let resp = DockerResult {
+            success: false,
+            message: format!("Failed to request JSON: {}", e),
+          };
+          
+          let mut response = tide::Response::new(400);
+          response.set_body(serde_json::to_string(&resp).unwrap_or_default());
+
+          return Ok(response);
+        }
+      };
 
       let result = match docker::deploy_minecraft_container(&opts).await {
         Ok(id) => DockerResult {

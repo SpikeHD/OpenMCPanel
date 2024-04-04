@@ -16,6 +16,7 @@ export function LogWindow(props: Props) {
   useEffect(() => {
     // TODO maybe do with websockets?
     const intv = setInterval(async () => {
+      console.log('intv')
       const req = await getLogs(props.id, lastLogPing)
 
       setLastLogPing(Date.now())
@@ -50,7 +51,7 @@ export function LogWindow(props: Props) {
       clearInterval(intv)
       document.removeEventListener('wheel', scrollListener)
     }
-  }, [lastLogPing, manuallyScrolled])
+  }, [manuallyScrolled])
 
   return (
     <div class="log-window" ref={ref}>

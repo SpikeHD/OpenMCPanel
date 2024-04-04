@@ -3,6 +3,7 @@ import './Deploy.css'
 import { envToReadable, envToReadableSmall, serverTypeConfig, serverTypes } from '../../util/server_consts'
 import { Icon } from '../../util/icon'
 import { deployContainer } from '../../util/docker'
+import { JSX } from 'preact/jsx-runtime'
 
 interface Props {
   path: string;
@@ -15,7 +16,7 @@ export function Deploy(props: Props) {
     showDialog('Deploying (this may take a moment)...')
     const req = await deployContainer(
       config['SERVER_NAME'],
-      config['PORT'],
+      Number(config['PORT']),
       config['TYPE'],
       config['VERSION'],
       // Filter out the previous values that are not needed, and convert bools and numbers to strings
@@ -29,14 +30,17 @@ export function Deploy(props: Props) {
     const res = await req.json()
 
     if (!res.success) {
-      showDialog('Failed to deploy server: ' + res.error)
+      showDialog('Failed to deploy server: ' + res.message)
       return
     }
 
     // Close dialog, open server list
     window.dispatchEvent(new CustomEvent('close-dialog'))
-    window.location.hash = '/manage'
+    // Send the user directly to the monitoring page
+    window.location.hash = '/monitor/' + res.message
   }
+
+  console.log(config)
 
   return (
     <div class="deploy">
@@ -86,9 +90,28 @@ export function Deploy(props: Props) {
           <h2>
             Server-type Specific Options
           </h2>
+          {
+            (config['TYPE'] || 'VANILLA') !== 'VANILLA' ? (
+              <span>
+                Make sure you are specifying mods compatible with your server type!
+              </span>
+            ) : (
+              <span>
+                When choosing a server type other than Vanilla, options will appear here to specify mod packs and plugins!
+              </span>
+            )
+          }
+
 
           {
             Object.entries(serverTypeConfig(config['TYPE'] || 'VANILLA')).map(c => (
+              optionToElement(c, setConfig, config)
+            ))
+          }
+
+          {
+            // Modpack stuff
+            (config['TYPE'] || 'VANILLA') !== 'VANILLA' && Object.entries(serverTypeConfig('NOT_VANILLA')).map(c => (
               optionToElement(c, setConfig, config)
             ))
           }
@@ -234,7 +257,7 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
   )
 }
 
-function showDialog(msg: string) {
+function showDialog(msg: string | JSX.Element) {
   const event = new CustomEvent('open-dialog', {
     detail: {
       kind: 'general',

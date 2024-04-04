@@ -1,10 +1,12 @@
+import { JSX } from 'preact/jsx-runtime'
+
 interface ServerConfig {
   [key: string]: {
     [key: string]: {
       default: string | number | boolean;
       placeholder?: string | number | boolean;
       // Extra info for user
-      note?: string;
+      note?: string | JSX.Element;
       // If specified, this will be a select list
       options?: string[];
       // Hidden options
@@ -30,7 +32,7 @@ export function envToReadableSmall(env: string) {
 
 export function serverTypes() {
   // Ignore JVM, ALL, ALL_ADVANCED
-  return Object.keys(serverConfigs).filter(e => !['JVM', 'ALL', 'ALL_ADVANCED'].includes(e))
+  return Object.keys(serverConfigs).filter(e => !['JVM', 'ALL', 'ALL_ADVANCED', 'NOT_VANILLA'].includes(e))
 }
 
 export function serverTypeConfig(serverType: string) {
@@ -77,7 +79,7 @@ export const serverConfigs: ServerConfig = {
     WHITELIST: {
       default: '',
       placeholder: '',
-      note: 'Comma separated list of usernames',
+      note: 'Comma separated list of usernames. Will disable whitelist if empty.',
       size: 'large'
     },
     OPS: {
@@ -244,18 +246,72 @@ export const serverConfigs: ServerConfig = {
       note: 'Additional JVM options'
     },
   },
+  NOT_VANILLA: {
+    // CurseForge vars
+    CURSEFORGE_FILES: {
+      default: '',
+      placeholder: 'jei,238222,https://www.curseforge.com/minecraft/mc-mods/jei/files/4593548',
+      note: (
+        <>Comma-seperated list of CurseForge resources. More info: <a href='https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/curseforge/'>https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/curseforge/</a></>
+      )
+    },
+    CF_API_KEY: {
+      default: '',
+      placeholder: 'ab12cd34ef56gh78ij90kl',
+      note: 'CurseForge API key. Required for downloading from CurseForge.'
+    },
+    // Modrinth vars
+    MODRINTH_PROJECTS: {
+      default: '',
+      placeholder: 'ferrite-core,lithium:mc1.20.4-0.12.1,simple-voice-chat:beta',
+      note: (
+        <>Comma-seperated list of Modrinth resources. More info: <a href='https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/modrinth/'>https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/modrinth/</a></>
+      )
+    },
+    MODRINTH_DOWNLOAD_DEPENDENCIES: {
+      default: 'NONE',
+      options: ['NONE', 'REQUIRED', 'OPTIONAL'],
+      note: 'Download dependencies for Modrinth mods.'
+    },
+    MODRINTH_ALLOWED_VERSION_TYPE: {
+      default: 'release',
+      options: ['release', 'alpha', 'beta'],
+      note: 'Allowed version types for Modrinth mods.'
+    },
+    PACKWIZ_URL: {
+      default: '',
+      placeholder: 'https://...',
+      note: (
+        <>PackWiz URL. More info: <a href='https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/packwiz/'>https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/packwiz/</a></>
+      )
+    }
+  },
   VANILLA: {},
   SPIGOT: {
     SPIGOT_DOWNLOAD_URL: {
       default: '',
       placeholder: 'https://...'
     },
+    SPIGET_RESOURCES: {
+      default: '',
+      placeholder: '12345',
+      note: (
+        <>Comma-seperated list of Spiget resource IDs. More info: <a href='https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/spiget/'>https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/spiget/</a></>
+      )
+    }
   },
   BUKKIT: {
     BUKKIT_DOWNLOAD_URL: {
       default: '',
       placeholder: 'https://...'
     },
+    SPIGET_RESOURCES: {
+      default: '',
+      placeholder: '12345',
+      note: (
+        <>Comma-seperated list of Spiget resource IDs. More info: <a href='https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/spiget/'>https://docker-minecraft-server.readthedocs.io/en/latest/mods-and-plugins/spiget/</a></>
+      )
+    }
   },
   CANYON: {
     VERSION: {
@@ -310,7 +366,9 @@ export const serverConfigs: ServerConfig = {
     KETTING_VERSION: {
       default: '',
       placeholder: 'latest',
-      note: 'More info: https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/server-types/hybrids/#ketting'
+      note: (
+        <>More info: <a href='https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/server-types/hybrids/#ketting'>https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/server-types/hybrids/#ketting</a></>
+      )
     },
     FORGE_VERSION: {
       default: '',
@@ -343,7 +401,9 @@ export const serverConfigs: ServerConfig = {
     LIMBO_BUILD: {
       default: '',
       placeholder: 'latest',
-      note: 'Find versions here: https://ci.loohpjames.com/job/Limbo/'
+      note: (
+        <>Find applicable versions here: <a href='https://ci.loohpjames.com/job/Limbo/'>https://ci.loohpjames.com/job/Limbo/</a></>
+      )
     }
   },
   CRUCIBLE: {
@@ -366,6 +426,13 @@ export const serverConfigs: ServerConfig = {
       default: '',
       placeholder: 'https://...'
     },
+    SPIGET_RESOURCES: {
+      default: '',
+      placeholder: '12345',
+      note: (
+        <>More info: <a href='https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/server-types/hybrids/#ketting'>https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/server-types/hybrids/#ketting</a></>
+      )
+    }
   },
   PUFFERFISH: {
     PUFFERFISH_BUILD: {
