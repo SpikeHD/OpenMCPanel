@@ -77,7 +77,7 @@ export function Deploy(props: Props) {
           }
 
           <h2>
-            JVM options
+            JVM Options
           </h2>
           {
             Object.entries(serverTypeConfig('JVM')).map(c => (
