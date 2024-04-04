@@ -48,17 +48,20 @@ function ServerCard(props: CardProps) {
   const [hovered, setHovered] = useState(false)
 
   useEffect(() => {
-    (async () => {
+    let updateIntv
+
+    ;(async () => {
       setDetails(await getStatus(props.id))
 
       // Every 3 seconds, update the status
-      const updateIntv = setInterval(async () => {
+      updateIntv = setInterval(async () => {
         setDetails(await getStatus(props.id))
       }, 3000)
 
-      // Cleanup interval
-      return () => clearInterval(updateIntv)
     })()
+
+    // Cleanup interval
+    return () => clearInterval(updateIntv)
   }, [])
 
   return (
