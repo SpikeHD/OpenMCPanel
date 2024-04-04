@@ -11,6 +11,7 @@ interface Props {
 
 interface CardProps extends Container {
   onClick: () => void;
+  onRemove: () => void;
 }
 
 export function ManageList(props: Props) {
@@ -29,7 +30,9 @@ export function ManageList(props: Props) {
       <div class="server-list">
         {
           containers.length > 0 ? containers.map(c => (
-            <ServerCard {...c} onClick={() => console.log('clicked')} />
+            <ServerCard {...c} onRemove={() => {
+              setContainers(containers.filter(c2 => c2.id !== c.id))
+            }} />
           )) : (
             <span class="no-servers">You haven't deployed any servers yet. Give it a try!</span>
           )
@@ -104,15 +107,16 @@ function ServerCard(props: CardProps) {
                     name: props.name.replace('/', ''),
                     onDelete: async () => {
                       // Show a new dialog
-                      openDialog('general', {
-                        message: 'Deleting container...',
-                      })
+                      openDialog('general', 'Deleting container...')
 
                       // Delete the container
                       await deleteContainer(props.id)
 
                       // Close the dialog
                       closeDialog()
+
+                      // Refresh the list
+                      props.onRemove()
                     }
                   })
                 }}
