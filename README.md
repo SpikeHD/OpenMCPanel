@@ -27,6 +27,8 @@
   - [Prerequisites](#prerequisites)
   - [Steps](#steps)
 - [Building](#building)
+  - [Prerequisites](#prerequisites-1)
+  - [Steps](#steps-1)
 - [Recommendations](#recommendations)
 
 # Features
