@@ -247,6 +247,16 @@ export const serverConfigs: ServerConfig = {
     },
   },
   NOT_VANILLA: {
+    PLUGINS: {
+      default: '',
+      placeholder: 'https://...,https://...',
+      note: 'Links to plugins'
+    },
+    MODS: {
+      default: '',
+      placeholder: 'https://...,https://...',
+      note: 'Links to mods'
+    },
     // CurseForge vars
     CURSEFORGE_FILES: {
       default: '',
