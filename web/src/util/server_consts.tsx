@@ -95,7 +95,7 @@ export const serverConfigs: ServerConfig = {
   },
   ALL_ADVANCED: {
     CUSTOM_IMAGE: {
-      // This is not an env var, but something sent with the deploy request which shoould pull and use the specific image
+      // This is not an env var, but something sent with the deploy request which should pull and use the specific image
       default: '',
       placeholder: 'username/repo:tag',
       note: 'Use a custom image instead of the default one (itzg/minecraft-server)'
@@ -103,12 +103,12 @@ export const serverConfigs: ServerConfig = {
     CUSTOM_IMAGE_TAG: {
       default: '',
       placeholder: 'latest',
-      note: 'use a specific tag. if a custom image is specified, this will be used as the tag for the official image.'
+      note: 'Use a specific tag. if a custom image is specified, this will be used as the tag for the official image.'
     },
     CUSTOM_SERVER: {
       default: '',
       placeholder: 'https://...',
-      note: 'Doesn\'t support local/uploaded files... yet.'
+      note: 'Custom server .jar. Doesn\'t support local/uploaded files... yet.'
     },
     ENABLE_QUERY: {
       default: false,
