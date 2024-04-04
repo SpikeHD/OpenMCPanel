@@ -1,0 +1,42 @@
+.home {
+  height: 100%;
+}
+
+.home-content {
+  height: 90%;
+        
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.home-item {
+  width: 30%;
+  height: 60%;
+
+  margin: 12px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 6px;
+  border: 6px solid var(--text);
+
+  font-weight: bold;
+  font-size: 1.5em;
+
+  transition: all 0.1s;
+}
+
+.home-item:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.home-item .icon {
+  width: 30%;
+  height: 50%;
+}

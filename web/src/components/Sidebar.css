@@ -33,6 +33,13 @@
   margin-top: 12px;
   margin-bottom: 12px;
   width: 50%;
+
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.sidebar-icon:hover {
+  transform: scale(1.1);
 }
 
 .sidebar-icon img {
