@@ -15,7 +15,7 @@
 </div>
 
 <div align="center">
-  Create, manage, and monitor one, few, or many Minecraft servers using a web-based UI.
+  Create, manage, and monitor one, few, or many Minecraft servers using a web-based UI. Powered by [itzg/docker-minecraft-server](https://github.com/itzg/docker-minecraft-server).
   <br />
   https://discord.gg/agQ9mRdHMZ
 </div>
