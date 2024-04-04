@@ -84,7 +84,8 @@ tar -xzf omcp.tar.gz
 ```
 
 4. Open your web browser and navigate to `http://localhost:[PORT]` to access the panel! You are ready to deploy!
-  a. If you need to access the web interface remotely, make sure to configure your webserver to reverse-proxy to the port you specified
+
+If you need to access the web interface remotely, make sure to configure your webserver to reverse-proxy to the port you specified
 
 # Building
 
