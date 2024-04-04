@@ -71,6 +71,15 @@ export function Deploy(props: Props) {
               optionToElement(c, setConfig, config)
             ))
           }
+
+          <h2>
+            JVM options
+          </h2>
+          {
+            Object.entries(serverTypeConfig('JVM')).map(c => (
+              optionToElement(c, setConfig, config)
+            ))
+          }
         </div>
 
         <div class="mod-options">
