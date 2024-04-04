@@ -24,8 +24,12 @@
   margin-top: 6px;
 }
 
-.command-input input {
+.command-input input[type="text"] {
   width: 100%;
+
+  margin: 0;
+  padding: 0;
+  padding-bottom: 6px;
   margin-top: 6px;
 }
 

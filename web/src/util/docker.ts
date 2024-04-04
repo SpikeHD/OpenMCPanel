@@ -53,6 +53,10 @@ export async function stopContainer(id: string) {
   await fetch(`/api/stop/${id}`, { method: 'POST' })
 }
 
+export function deleteContainer(id: string) {
+  return fetch(`/api/destroy/${id}`, { method: 'POST' })
+}
+
 export async function deployContainer(name: string, port: number, kind: string, version: string, options: unknown) {
   return await fetch('/api/deploy', {
     method: 'POST',

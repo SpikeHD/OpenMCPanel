@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'preact/hooks'
-import { getContainers, Container, Status, getStatus, stopContainer, startContainer } from '../../util/docker'
+import { getContainers, Container, Status, getStatus, stopContainer, startContainer, deleteContainer } from '../../util/docker'
 import './ManageList.css'
 import { Icon } from '../../util/icon'
 import { route } from 'preact-router'
+import { closeDialog, openDialog } from '../../util/dialog'
 
 interface Props {
   path: string;
@@ -96,16 +97,34 @@ function ServerCard(props: CardProps) {
               }
 
               <Icon
+                icon="trash"
+                onClick={() => {
+                  openDialog('delete', {
+                    id: props.id,
+                    name: props.name.replace('/', ''),
+                    onDelete: async () => {
+                      // Show a new dialog
+                      openDialog('general', {
+                        message: 'Deleting container...',
+                      })
+
+                      // Delete the container
+                      await deleteContainer(props.id)
+
+                      // Close the dialog
+                      closeDialog()
+                    }
+                  })
+                }}
+              />
+
+              <Icon
                 icon="wrench"
                 onClick={() => {
-                  window.dispatchEvent(new CustomEvent('open-dialog', {
-                    detail: {
-                      kind: 'config',
-                      data: {
-                        id: props.id
-                      }
-                    }
-                  }))
+                  openDialog('config', {
+                    id: props.id,
+                    name: props.name,
+                  })
                 }}
               />
 

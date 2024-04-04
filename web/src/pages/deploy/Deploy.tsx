@@ -1,9 +1,10 @@
 import { useState } from 'preact/hooks'
-import './Deploy.css'
 import { envToReadable, envToReadableSmall, serverTypeConfig, serverTypes } from '../../util/server_consts'
 import { Icon } from '../../util/icon'
 import { deployContainer } from '../../util/docker'
-import { JSX } from 'preact/jsx-runtime'
+import { closeDialog, openDialog } from '../../util/dialog'
+
+import './Deploy.css'
 
 interface Props {
   path: string;
@@ -13,7 +14,7 @@ export function Deploy(props: Props) {
   const [config, setConfig] = useState({})
 
   const deploy = async () => {
-    showDialog('Deploying (this may take a moment)...')
+    openDialog('general', 'Deploying (this may take a moment)...')
     const req = await deployContainer(
       config['SERVER_NAME'],
       Number(config['PORT']),
@@ -30,12 +31,13 @@ export function Deploy(props: Props) {
     const res = await req.json()
 
     if (!res.success) {
-      showDialog('Failed to deploy server: ' + res.message)
+      openDialog('general', res.message)
       return
     }
 
     // Close dialog, open server list
-    window.dispatchEvent(new CustomEvent('close-dialog'))
+    closeDialog()
+
     // Send the user directly to the monitoring page
     window.location.hash = '/monitor/' + res.message
   }
@@ -162,7 +164,7 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
         {
           option[1]?.note && (
             <Icon icon="info_circle" onClick={() => {
-              showDialog(option[1].note)
+              openDialo(option[1].note)
             }} />
           )
         }
@@ -255,15 +257,4 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
       }
     </div>
   )
-}
-
-function showDialog(msg: string | JSX.Element) {
-  const event = new CustomEvent('open-dialog', {
-    detail: {
-      kind: 'general',
-      data: msg
-    }
-  })
-
-  window.dispatchEvent(event)
 }

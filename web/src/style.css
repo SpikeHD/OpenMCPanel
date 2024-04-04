@@ -101,6 +101,30 @@ option {
   background-color: var(--background);
 }
 
+button {
+  border: 1px solid var(--text);
+  border-radius: 6px;
+
+  padding: 6px;
+  margin: 6px 0 6px 0;
+
+  font-size: 16px;
+
+  background: var(--text);
+  color: var(--background);
+
+  cursor: pointer;
+
+  transition: all 0.1s;
+}
+
+button.danger {
+  background: var(--offline);
+  border: var(--offline);
+
+  color: var(--background);
+}
+
 /* Custom scrollbar stuff (all platforms) */
 /* width */
 ::-webkit-scrollbar {

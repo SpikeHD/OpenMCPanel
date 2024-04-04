@@ -1,5 +1,6 @@
 import { JSX } from 'preact/jsx-runtime'
 import './Dialog.css'
+import { closeDialog } from '../util/dialog';
 
 interface Props {
   children: JSX.Element | JSX.Element[] | string;
@@ -8,7 +9,7 @@ interface Props {
 
 export function Dialog(props: Props) {
   const onClose = () => {
-    window.dispatchEvent(new CustomEvent('close-dialog'))
+    closeDialog()
     props?.onClose?.()
   }
 
