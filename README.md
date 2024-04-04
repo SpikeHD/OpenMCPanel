@@ -1,17 +1,113 @@
 <div align="center">
   <h1>OpenMCPanel</h1>
-  <span>Deploy, manage, and monitor Minecraft servers using a web-based UI.</span>
 </div>
 
-# Get Started
+<div align="center">
+ <img src="https://img.shields.io/github/actions/workflow/status/SpikeHD/OpenMCPanel/build.yml" />
+ <img src="https://img.shields.io/github/package-json/v/SpikeHD/OpenMCPanel" />
+ <img src="https://img.shields.io/github/repo-size/SpikeHD/OpenMCPanel" />
+</div>
+<div align="center">
+ <img src="https://img.shields.io/github/commit-activity/m/SpikeHD/OpenMCPanel" />
+ <img src="https://img.shields.io/github/release-date/SpikeHD/OpenMCPanel" />
+ <img src="https://img.shields.io/github/stars/SpikeHD/OpenMCPanel" />
+ <img src="https://img.shields.io/github/downloads/SpikeHD/OpenMCPanel/total" />
+</div>
 
-TODO: write docs on this
+<div align="center">
+  Create, manage, and monitor one, few, or many Minecraft servers using a web-based UI.
+  <br />
+  https://discord.gg/agQ9mRdHMZ
+</div>
+
+# Table of Contents
+
+- [Features](#features)
+- [Get Started](#get-started)
+  - [Prerequisites](#prerequisites)
+  - [Steps](#steps)
+- [Building](#building)
+- [Recommendations](#recommendations)
 
 # Features
 
 * **One-Click Server Deployment** - Deploy a Minecraft server with a single click.
-* **Simple Server Management** - Start and stop, manual and scheduled backups, manage operators, and more.
+* **Multiple Server Type Support** - Vanilla, Spigot, Paper, Fabric, etc. are all supported. Modpacks and mod lists are also supported!
+* **Simple Server Management** - Start and stop, manual and scheduled backups, on-the-fly command running, and more.
 * **Realtime Monitoring** - Keep track of player count, memory usage, and more.
+
+# Get Started
+
+## Prerequisites
+
+* [Docker](https://docs.docker.com/get-docker/) (or an equivalent, such as [Podman](https://podman.io/))
+* Webserver (such as [NGINX](https://www.nginx.com/))
+
+## Steps
+
+1. Download the latest release and extract it (you can also download [an Actions build](https://www.github.com/SpikeHD/OpenMCPanel/actions/workflows/build.yml)):
+```bash
+# Windows
+curl -L "https://www.github.com/SpikeHD/OpenMCPanel/releases/latest/download/omcp_win64.zip" -o omcp.zip
+unzip omcp.zip
+
+# Linux/MacOS
+curl -L "https://www.github.com/SpikeHD/OpenMCPanel/releases/latest/download/omcp_linux64.tar.gz" -o omcp.tar.gz
+tar -xzf omcp.tar.gz
+```
+
+2. Run the binary:
+```bash
+# Windows
+./omcp.exe --help
+
+# Linux/MacOS
+./omcp --help
+```
+
+3. After reviewing the options, start the server with a configuration of your liking:
+```bash
+# Windows
+./omcp.exe --log omcp.log --port 8080 --username Tester
+
+# Linux/MacOS
+./omcp --log omcp.log --port 8080 --username Tester
+```
+
+4. Open your web browser and navigate to `http://localhost:8080` (or the port you specified) to access the panel! You are ready to deploy!
+
+# Building
+
+## Prerequisites
+
+* [Node.js](https://nodejs.org/en/download/) (or your favorite runtime)
+* [Rust and Cargo](https://www.rust-lang.org/tools/install)
+
+## Steps
+
+1. Clone the repository:
+```bash
+git clone https://github.com/SpikeHD/OpenMCPanel.git
+cd OpenMCPanel
+```
+
+2. Install the dependencies:
+```bash
+cd web
+npm install
+```
+
+3. Build the project:
+```bash
+# Build the frontend
+npm run build
+
+# Build the backend
+cd ..
+cargo build --release
+```
+
+Your binary will be located at `target/release/omcp`.
 
 # Recommendations
 

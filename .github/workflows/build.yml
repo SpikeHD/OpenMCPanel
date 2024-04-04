@@ -54,18 +54,18 @@ jobs:
 
       - name: Build
         if: matrix.platform == 'windows-latest'
-        run: cd ./web && pnpm run build && cd ../ && cargo build --release
+        run: cd ./web && pnpm run build && cd .. && cargo build --release
 
       - name: Upload
         uses: actions/upload-artifact@v4
         if: matrix.platform != 'windows-latest'
         with:
           name: omcp-${{ matrix.platform }}
-          path: backend/target/release/open_mc_panel
+          path: target/release/open_mc_panel
 
       - name: Upload (Windows)
         uses: actions/upload-artifact@v4
         if: matrix.platform == 'windows-latest'
         with:
           name: omcp-${{ matrix.platform }}
-          path: backend/target/release/open_mc_panel.exe
+          path: target/release/open_mc_panel.exe
