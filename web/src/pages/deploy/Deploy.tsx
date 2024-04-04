@@ -164,7 +164,7 @@ export function optionToElement(option: [string, any], setConfig: (config: any) 
         {
           option[1]?.note && (
             <Icon icon="info_circle" onClick={() => {
-              openDialo(option[1].note)
+              openDialog('general', option[1].note)
             }} />
           )
         }
