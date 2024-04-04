@@ -129,3 +129,19 @@ Your binary will be located at `target/release/omcp`.
 * [ ] Multilingual support
 * [ ] Remote Docker host support
 * [ ] Custom .jar support
+
+# Contributing
+
+Issues, PRs, etc. are all welcome!
+
+# Screenshots
+
+<details>
+  <summary>Click to expand</summary>
+  
+  ![image](https://github.com/SpikeHD/OpenMCPanel/assets/25207995/9bcb5a02-f914-4b79-9f1c-3ccf9adce331)
+  
+  ![image](https://github.com/SpikeHD/OpenMCPanel/assets/25207995/fecb8ba4-95e6-4499-806b-e4a707252af5)
+  
+  ![image](https://github.com/SpikeHD/OpenMCPanel/assets/25207995/bde6c815-7285-48ca-9495-c529e3a5432c)
+</details>
