@@ -1,6 +1,6 @@
 import { Dialog } from './Dialog'
 import './DeleteDialog.css'
-import { closeDialog } from '../util/dialog';
+import { closeDialog } from '../util/dialog'
 
 interface Props {
   name: string;

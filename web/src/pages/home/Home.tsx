@@ -1,5 +1,5 @@
-import { route } from 'preact-router';
-import { Icon } from '../../util/icon';
+import { route } from 'preact-router'
+import { Icon } from '../../util/icon'
 import './Home.css'
 
 interface Props {

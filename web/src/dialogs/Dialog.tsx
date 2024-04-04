@@ -1,6 +1,6 @@
 import { JSX } from 'preact/jsx-runtime'
 import './Dialog.css'
-import { closeDialog } from '../util/dialog';
+import { closeDialog } from '../util/dialog'
 
 interface Props {
   children: JSX.Element | JSX.Element[] | string;
