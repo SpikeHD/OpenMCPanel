@@ -6,7 +6,7 @@ export function Sidebar() {
   return (
     <div class="sidebar">
       <div class="sidebar-icon">
-
+        <img src="/icons/omcp_icon.png" alt="logo" />
       </div>
 
       <Link href="/manage" class="sidebar-item">Servers</Link>

@@ -1,14 +1,14 @@
 <div align="center">
+  <img width="10%" src="web/public/icons/omcp_icon.png">
   <h1>OpenMCPanel</h1>
 </div>
 
 <div align="center">
  <img src="https://img.shields.io/github/actions/workflow/status/SpikeHD/OpenMCPanel/build.yml" />
- <img src="https://img.shields.io/github/package-json/v/SpikeHD/OpenMCPanel" />
  <img src="https://img.shields.io/github/repo-size/SpikeHD/OpenMCPanel" />
+ <img src="https://img.shields.io/github/commit-activity/m/SpikeHD/OpenMCPanel" />
 </div>
 <div align="center">
- <img src="https://img.shields.io/github/commit-activity/m/SpikeHD/OpenMCPanel" />
  <img src="https://img.shields.io/github/release-date/SpikeHD/OpenMCPanel" />
  <img src="https://img.shields.io/github/stars/SpikeHD/OpenMCPanel" />
  <img src="https://img.shields.io/github/downloads/SpikeHD/OpenMCPanel/total" />

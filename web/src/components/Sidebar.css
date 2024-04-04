@@ -30,9 +30,13 @@
 }
 
 .sidebar-icon {
-  width: 80%;
-  /* TODO temporary until I get an icon */
-  height: 60px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  width: 50%;
+}
+
+.sidebar-icon img {
+  width: 100%;
 }
 
 .sidebar-item.deploy {
