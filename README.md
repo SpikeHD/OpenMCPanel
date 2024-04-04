@@ -69,9 +69,9 @@ tar -xzf omcp.tar.gz
 
 > [!NOTE]
 > If you'd just like to play around with OpenMCPanel, you can specfiy `--address <your_external_ip>` which will expose the server
-> (INSECURELY, no HTTPS!) to the web without the need for a reverse proxy. This is NOT recommended for anything more than brief testing.
+> **(INSECURELY, no HTTPS!)** to the web without the need for a reverse proxy. This is NOT recommended for anything more than brief testing.
 >
-> You can also (again, SUPER INSECURE, only use this for testing/evalutation) specify `--no-auth` to disable the username/password requirement.
+> You can also (again, **SUPER INSECURE**, only use this for testing/evalutation) specify `--no-auth` to disable the username/password requirement.
 > Again, this is NOT recommended for anything more than brief testing.
 
 3. After reviewing the options, start the server with a configuration of your liking:
